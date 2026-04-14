@@ -16,8 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
-// Static files (uploads)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Static files (uploads) - Path updated for api/ folder
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Connect to MongoDB
 mongoose
@@ -25,20 +25,20 @@ mongoose
   .then(() => console.log('✅ MongoDB Connected'))
   .catch((err) => console.error('❌ MongoDB Error:', err));
 
-// Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/cases', require('./routes/cases'));
-app.use('/api/campaigns', require('./routes/campaigns'));
-app.use('/api/donations', require('./routes/donations'));
-app.use('/api/jobs', require('./routes/jobs'));
-app.use('/api/applications', require('./routes/applications'));
-app.use('/api/notifications', require('./routes/notifications'));
-app.use('/api/admin', require('./routes/admin'));
-app.use('/api/stats', require('./routes/stats'));
-app.use('/api/activities', require('./routes/activities'));
+// Routes - Paths updated for api/ folder
+app.use('/api/auth', require('../routes/auth'));
+app.use('/api/cases', require('../routes/cases'));
+app.use('/api/campaigns', require('../routes/campaigns'));
+app.use('/api/donations', require('../routes/donations'));
+app.use('/api/jobs', require('../routes/jobs'));
+app.use('/api/applications', require('../routes/applications'));
+app.use('/api/notifications', require('../routes/notifications'));
+app.use('/api/admin', require('../routes/admin'));
+app.use('/api/stats', require('../routes/stats'));
+app.use('/api/activities', require('../routes/activities'));
 
 // Root route for health check
-app.get('/', (req, res) => res.json({ success: true, message: 'Jam3iyati API is running...' }));
+app.get('/', (req, res) => res.json({ success: true, message: 'Jam3iyati API is running (Zero Config Mode)...' }));
 
 // Error handler
 app.use((err, req, res, next) => {
