@@ -11,23 +11,12 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express();
 
-// CORS الذكي: يوافق على أي Origin يطلبه طالما معه Credentials
-app.use(cors({
-  origin: function (origin, callback) {
-    // السماح لكل الـ Origins المباشرة (مثل المتصفح)
-    if (!origin) return callback(null, true);
-    return callback(null, origin);
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
-}));
+// Permissive CORS for SPA (Simplest mode)
+app.use(cors());
+app.options('(.*)', cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.options('*', cors());
-
 app.use(morgan('dev'));
 
 const connectDB = async () => {
@@ -39,10 +28,15 @@ const connectDB = async () => {
     console.error('❌ MongoDB Connection Error:', err.message);
   }
 };
-
 connectDB();
 
-app.get('/', (req, res) => res.json({ success: true, message: 'Jam3iyati API is working! (Final CORS Fix)' }));
+app.get('/', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Jam3iyati API is working!',
+    status: 'Ready'
+  });
+});
 
 try {
   app.use('/api/auth', require('./routes/auth'));
