@@ -31,23 +31,25 @@ const connectDB = async () => {
 
 connectDB();
 
-// Handle OPTIONS preflight - Fixed for Express 5
-app.options('(.*)', (cors())); 
 
 // Health check root
 app.get('/', (req, res) => res.json({ success: true, message: 'Jam3iyati API is working! (v2)' }));
 
 // Routes
-app.use('/api/auth', require('../routes/auth'));
-app.use('/api/cases', require('../routes/cases'));
-app.use('/api/campaigns', require('../routes/campaigns'));
-app.use('/api/donations', require('../routes/donations'));
-app.use('/api/jobs', require('../routes/jobs'));
-app.use('/api/applications', require('../routes/applications'));
-app.use('/api/notifications', require('../routes/notifications'));
-app.use('/api/admin', require('../routes/admin'));
-app.use('/api/stats', require('../routes/stats'));
-app.use('/api/activities', require('../routes/activities'));
+try {
+  app.use('/api/auth', require('../routes/auth'));
+  app.use('/api/cases', require('../routes/cases'));
+  app.use('/api/campaigns', require('../routes/campaigns'));
+  app.use('/api/donations', require('../routes/donations'));
+  app.use('/api/jobs', require('../routes/jobs'));
+  app.use('/api/applications', require('../routes/applications'));
+  app.use('/api/notifications', require('../routes/notifications'));
+  app.use('/api/admin', require('../routes/admin'));
+  app.use('/api/stats', require('../routes/stats'));
+  app.use('/api/activities', require('../routes/activities'));
+} catch (error) {
+  console.error("❌ Route Loading Error:", error);
+}
 
 // Error handler
 app.use((err, req, res, next) => {
