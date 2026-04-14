@@ -5,19 +5,31 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
 
-// Safe dotenv loading
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
 const app = express();
 
-app.use(cors({ origin: true, credentials: true }));
+// CORS الذكي: يوافق على أي Origin يطلبه طالما معه Credentials
+app.use(cors({
+  origin: function (origin, callback) {
+    // السماح لكل الـ Origins المباشرة (مثل المتصفح)
+    if (!origin) return callback(null, true);
+    return callback(null, origin);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.options('*', cors());
+
 app.use(morgan('dev'));
 
-// Improved Connection
 const connectDB = async () => {
   try {
     if (mongoose.connection.readyState === 1) return;
@@ -30,10 +42,8 @@ const connectDB = async () => {
 
 connectDB();
 
-// Health check root
-app.get('/', (req, res) => res.json({ success: true, message: 'Jam3iyati API is working! (Root Mode)' }));
+app.get('/', (req, res) => res.json({ success: true, message: 'Jam3iyati API is working! (Final CORS Fix)' }));
 
-// Routes
 try {
   app.use('/api/auth', require('./routes/auth'));
   app.use('/api/cases', require('./routes/cases'));
@@ -49,7 +59,6 @@ try {
   console.error("❌ Route Loading Error:", error.message);
 }
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, message: 'خطأ في الخادم' });
