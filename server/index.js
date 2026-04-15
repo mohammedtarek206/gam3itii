@@ -38,6 +38,16 @@ app.get('/', (req, res) => {
   });
 });
 
+// Debug endpoint for database
+app.get('/api/debug-db', (req, res) => {
+  const states = ['Disconnected', 'Connected', 'Connecting', 'Disconnecting'];
+  res.json({
+    success: true,
+    connectionState: states[mongoose.connection.readyState],
+    dbName: mongoose.connection.name || 'Not Connected'
+  });
+});
+
 try {
   app.use('/api/auth', require('./routes/auth'));
   app.use('/api/cases', require('./routes/cases'));
