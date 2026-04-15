@@ -44,15 +44,26 @@ const connectDB = async () => {
 };
 connectDB();
 
-app.get('/api/health', (req, res) => {
+app.get('/api/health', async (req, res) => {
+  let connectionError = null;
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+    }
+  } catch (err) {
+    connectionError = err.message;
+  }
+  
   res.json({ 
     success: true, 
     message: 'API is alive!',
     env: process.env.NODE_ENV,
     mongoURI_Exists: !!process.env.MONGODB_URI,
     dbStatus: mongoose.connection.readyState,
+    connectionError
   });
 });
+
 
 app.get('/', (req, res) => {
   res.json({ success: true, message: 'Jam3iyati API Root' });
