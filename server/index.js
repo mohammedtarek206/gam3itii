@@ -44,14 +44,20 @@ const connectDB = async () => {
 };
 connectDB();
 
-app.get('/', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({ 
     success: true, 
-    message: 'Jam3iyati API is working!',
+    message: 'API is alive!',
     env: process.env.NODE_ENV,
-    dbStatus: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
+    mongoURI_Exists: !!process.env.MONGODB_URI,
+    dbStatus: mongoose.connection.readyState,
   });
 });
+
+app.get('/', (req, res) => {
+  res.json({ success: true, message: 'Jam3iyati API Root' });
+});
+
 
 // Temporary route to seed the admin user on Vercel
 app.get('/api/seed-db', async (req, res) => {
