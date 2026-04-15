@@ -33,13 +33,6 @@ export default function LoginPage() {
         <h2>تسجيل الدخول</h2>
         <p className="auth-sub">أهلاً بعودتك! سجّل دخولك للمتابعة</p>
 
-        {/* Demo credentials */}
-        <div style={{ background: 'var(--secondary)', borderRadius: 'var(--radius)', padding: '0.85rem 1rem', marginBottom: '1.5rem', fontSize: '0.82rem' }}>
-          <strong style={{ color: 'var(--primary)' }}>🔑 بيانات تجريبية:</strong>
-          <div style={{ marginTop: '0.3rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <span>أدمن: <code>admin@jam3iyati.com</code> | <code>Admin@123</code></span>
-          </div>
-        </div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
