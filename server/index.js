@@ -11,9 +11,23 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express();
 
-// Permissive CORS for SPA (Simplest mode)
-app.use(cors());
-app.options('(.*)', cors());
+// Permissive CORS for SPA
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5000',
+  'https://gameia-wine.vercel.app'
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,38 +48,42 @@ app.get('/', (req, res) => {
   res.json({ 
     success: true, 
     message: 'Jam3iyati API is working!',
-    status: 'Ready'
+    env: process.env.NODE_ENV,
+    dbStatus: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
   });
 });
 
-// Debug endpoint for database
-app.get('/api/debug-db', (req, res) => {
-  const states = ['Disconnected', 'Connected', 'Connecting', 'Disconnecting'];
-  res.json({
-    success: true,
-    connectionState: states[mongoose.connection.readyState],
-    dbName: mongoose.connection.name || 'Not Connected'
-  });
-});
+// Helper to handle both /api and root routes if needed
+const apiRouter = express.Router();
+apiRouter.use('/auth', require('./routes/auth'));
+apiRouter.use('/cases', require('./routes/cases'));
+apiRouter.use('/campaigns', require('./routes/campaigns'));
+apiRouter.use('/donations', require('./routes/donations'));
+apiRouter.use('/jobs', require('./routes/jobs'));
+apiRouter.use('/applications', require('./routes/applications'));
+apiRouter.use('/notifications', require('./routes/notifications'));
+apiRouter.use('/admin', require('./routes/admin'));
+apiRouter.use('/stats', require('./routes/stats'));
+apiRouter.use('/activities', require('./routes/activities'));
 
-try {
-  app.use('/api/auth', require('./routes/auth'));
-  app.use('/api/cases', require('./routes/cases'));
-  app.use('/api/campaigns', require('./routes/campaigns'));
-  app.use('/api/donations', require('./routes/donations'));
-  app.use('/api/jobs', require('./routes/jobs'));
-  app.use('/api/applications', require('./routes/applications'));
-  app.use('/api/notifications', require('./routes/notifications'));
-  app.use('/api/admin', require('./routes/admin'));
-  app.use('/api/stats', require('./routes/stats'));
-  app.use('/api/activities', require('./routes/activities'));
-} catch (error) {
-  console.error("❌ Route Loading Error:", error.message);
-}
+app.use('/api', apiRouter);
+
+// Fallback for direct /auth etc if someone hits it
+app.use(apiRouter);
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('❌ Server Error:', err.message);
   res.status(500).json({ success: false, message: 'خطأ في الخادم' });
 });
+
+app.use(helmet());
+
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
+}
+
 
 module.exports = app;
