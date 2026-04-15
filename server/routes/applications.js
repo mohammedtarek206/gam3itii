@@ -9,7 +9,12 @@ const Notification = require('../models/Notification');
 const { protect, admin } = require('../middleware/auth');
 
 const uploadDir = path.join(__dirname, '../uploads/cvs');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+try {
+  if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+} catch (err) {
+  console.warn('Vercel read-only FS - skipping mkdir:', err.message);
+}
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
