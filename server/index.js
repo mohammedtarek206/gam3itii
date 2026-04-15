@@ -58,19 +58,21 @@ app.get('/api/seed-db', async (req, res) => {
   try {
     const User = require('./models/User');
     // Check if admin already exists
-    const adminExists = await User.findOne({ email: 'admin@jam3iyati.com' });
+    const adminExists = await User.findOne({ email: 'mohammed@jam3iyati.com' });
     if (adminExists) {
-      return res.json({ success: true, message: 'Admin already exists!' });
+      return res.json({ success: true, message: '✅ الحساب الحقيقي موجود مسبقاً! يمكنك تسجيل الدخول.' });
     }
     
     await User.create({
-      name: 'مدير النظام',
-      email: 'admin@jam3iyati.com',
-      password: 'Admin@123',
-      role: 'admin'
+      name: 'محمد طارق',
+      email: 'mohammed@jam3iyati.com',
+      password: 'Binaa@password',
+      role: 'admin',
+      points: 1000,
+      badges: ['مدير المنصة']
     });
     
-    res.json({ success: true, message: '✅ Admin created successfully! You can login now.' });
+    res.json({ success: true, message: '✅ تم زرع الحساب الحقيقي بنجاح! يمكنك العودة وتسجيل الدخول الآن.' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
