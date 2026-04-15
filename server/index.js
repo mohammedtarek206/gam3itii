@@ -53,6 +53,30 @@ app.get('/', (req, res) => {
   });
 });
 
+// Temporary route to seed the admin user on Vercel
+app.get('/api/seed-db', async (req, res) => {
+  try {
+    const User = require('./models/User');
+    // Check if admin already exists
+    const adminExists = await User.findOne({ email: 'admin@jam3iyati.com' });
+    if (adminExists) {
+      return res.json({ success: true, message: 'Admin already exists!' });
+    }
+    
+    await User.create({
+      name: 'مدير النظام',
+      email: 'admin@jam3iyati.com',
+      password: 'Admin@123',
+      role: 'admin'
+    });
+    
+    res.json({ success: true, message: '✅ Admin created successfully! You can login now.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+
 // Helper to handle both /api and root routes if needed
 const apiRouter = express.Router();
 apiRouter.use('/auth', require('./routes/auth'));
