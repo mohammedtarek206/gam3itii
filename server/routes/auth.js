@@ -5,7 +5,11 @@ const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 
 const signToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
+  jwt.sign(
+    { id }, 
+    process.env.JWT_SECRET || 'fallback_secret', 
+    { expiresIn: process.env.JWT_EXPIRE || '30d' }
+  );
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {

@@ -4,25 +4,41 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
-
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
+const fs = require('fs');
 
 const app = express();
+
+// Security first
+app.use(helmet());
+
+// Load Environment Variables
+if (process.env.NODE_ENV !== 'production' || !process.env.MONGODB_URI) {
+  const envPath = path.join(__dirname, '.env.local');
+  const envExists = fs.existsSync(envPath);
+  
+  require('dotenv').config({
+    path: envExists ? envPath : path.join(__dirname, '.env')
+  });
+}
 
 // Permissive CORS for SPA
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5000',
-  'https://gameia-wine.vercel.app'
+  'http://127.0.0.1:5173',
+  'https://gameia-wine.vercel.app',
+  'https://binaa-gray.vercel.app'
 ];
 
 app.use(cors({
   origin: function(origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+    // Check if origin is in list OR it's a Vercel subdomain
+    const isVercel = origin && (origin.endsWith('.vercel.app') || origin.includes('vercel.app'));
+    
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || isVercel || process.env.NODE_ENV !== 'production') {
       callback(null, true);
     } else {
+      console.warn('Blocked by CORS:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -36,6 +52,10 @@ app.use(morgan('dev'));
 const connectDB = async () => {
   try {
     if (mongoose.connection.readyState === 1) return;
+    if (!process.env.MONGODB_URI) {
+      console.error('❌ MONGODB_URI is missing');
+      return;
+    }
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('✅ MongoDB Connected');
   } catch (err) {
@@ -47,7 +67,7 @@ connectDB();
 app.get('/api/health', async (req, res) => {
   let connectionError = null;
   try {
-    if (mongoose.connection.readyState !== 1) {
+    if (mongoose.connection.readyState !== 1 && process.env.MONGODB_URI) {
       await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
     }
   } catch (err) {
@@ -64,17 +84,14 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
-
 app.get('/', (req, res) => {
   res.json({ success: true, message: 'Jam3iyati API Root' });
 });
-
 
 // Temporary route to seed the admin user on Vercel
 app.get('/api/seed-db', async (req, res) => {
   try {
     const User = require('./models/User');
-    // Check if admin already exists
     const adminExists = await User.findOne({ email: 'mohammed@jam3iyati.com' });
     if (adminExists) {
       return res.json({ success: true, message: '✅ الحساب الحقيقي موجود مسبقاً! يمكنك تسجيل الدخول.' });
@@ -95,8 +112,6 @@ app.get('/api/seed-db', async (req, res) => {
   }
 });
 
-
-// Helper to handle both /api and root routes if needed
 const apiRouter = express.Router();
 apiRouter.use('/auth', require('./routes/auth'));
 apiRouter.use('/cases', require('./routes/cases'));
@@ -110,16 +125,21 @@ apiRouter.use('/stats', require('./routes/stats'));
 apiRouter.use('/activities', require('./routes/activities'));
 
 app.use('/api', apiRouter);
+app.use(apiRouter); // Fallback
 
-// Fallback for direct /auth etc if someone hits it
-app.use(apiRouter);
-
+// Global Error Handler - Improved Logging
 app.use((err, req, res, next) => {
   console.error('❌ Server Error:', err.message);
-  res.status(500).json({ success: false, message: 'خطأ في الخادم' });
+  if (err.stack) console.error(err.stack);
+  
+  const response = {
+    success: false,
+    message: err.message || 'خطأ في الخادم',
+    debug: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  };
+  
+  res.status(500).json(response);
 });
-
-app.use(helmet());
 
 if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   const PORT = process.env.PORT || 5000;
@@ -127,6 +147,5 @@ if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
     console.log(`🚀 Server running on port ${PORT}`);
   });
 }
-
 
 module.exports = app;
