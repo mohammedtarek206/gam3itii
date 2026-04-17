@@ -265,7 +265,7 @@ export default function ActivitiesPage() {
       <div className="page-header">
         <div className="container">
           <h1>🎯 الأنشطة والفعاليات</h1>
-          <p>اكتشف أنشطة جمعيتي وسجّل في الفعاليات القادمة</p>
+          <p>اكتشف أنشطة بناء وسجّل في الفعاليات القادمة</p>
         </div>
       </div>
 

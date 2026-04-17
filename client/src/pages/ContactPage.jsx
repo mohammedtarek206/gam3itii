@@ -4,10 +4,10 @@ export default function ContactPage() {
   const contacts = [
     { icon: <FaWhatsapp style={{ color: '#25D366' }} />, label: 'واتساب', value: '01000000000+', href: 'https://wa.me/201000000000', bg: '#f0fdf4' },
     { icon: <FaPhone style={{ color: 'var(--primary)' }} />, label: 'هاتف', value: '01000000000+', href: 'tel:+201000000000', bg: 'var(--secondary)' },
-    { icon: <FaEnvelope style={{ color: '#ea4335' }} />, label: 'البريد الإلكتروني', value: 'info@jam3iyati.eg', href: 'mailto:info@jam3iyati.eg', bg: '#fff5f5' },
-    { icon: <FaFacebook style={{ color: '#1877f2' }} />, label: 'فيسبوك', value: 'Jam3iyati', href: '#', bg: '#eff6ff' },
-    { icon: <FaInstagram style={{ color: '#e1306c' }} />, label: 'انستجرام', value: '@jam3iyati', href: '#', bg: '#fdf2f8' },
-    { icon: <FaTwitter style={{ color: '#1da1f2' }} />, label: 'تويتر', value: '@jam3iyati', href: '#', bg: '#eff6ff' },
+    { icon: <FaEnvelope style={{ color: '#ea4335' }} />, label: 'البريد الإلكتروني', value: 'info@benna.eg', href: 'mailto:info@benna.eg', bg: '#fff5f5' },
+    { icon: <FaFacebook style={{ color: '#1877f2' }} />, label: 'فيسبوك', value: 'Benna', href: '#', bg: '#eff6ff' },
+    { icon: <FaInstagram style={{ color: '#e1306c' }} />, label: 'انستجرام', value: '@benna', href: '#', bg: '#fdf2f8' },
+    { icon: <FaTwitter style={{ color: '#1da1f2' }} />, label: 'تويتر', value: '@benna', href: '#', bg: '#eff6ff' },
   ];
 
   return (

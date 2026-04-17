@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
@@ -27,7 +29,7 @@ export default function LoginPage() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">
-          <h1>🌿 جمعيتي</h1>
+          <h1>🌿 {t('nav.brand')}</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>منصة الخير الرقمية</p>
         </div>
         <h2>تسجيل الدخول</h2>

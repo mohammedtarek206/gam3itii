@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
 export default function RegisterPage() {
+  const { t } = useTranslation();
   const { register } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
@@ -27,7 +29,7 @@ export default function RegisterPage() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">
-          <h1>🌿 جمعيتي</h1>
+          <h1>🌿 {t('nav.brand')}</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>انضم لمجتمع الخير</p>
         </div>
         <h2>إنشاء حساب جديد</h2>

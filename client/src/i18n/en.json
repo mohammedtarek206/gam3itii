@@ -11,12 +11,13 @@
         "register": "Register",
         "dashboard": "My Dashboard",
         "admin": "Admin Panel",
-        "logout": "Logout"
+        "logout": "Logout",
+        "brand": "Benna"
       },
       "home": {
         "hero_title": "Together We",
         "hero_highlight": "Make a Difference",
-        "hero_sub": "Jam3iyati connects those in need with generous donors. Help create real change in people's lives.",
+        "hero_sub": "Benna connects those in need with generous donors. Help create real change in people's lives.",
         "donate_now": "Donate Now",
         "explore_cases": "Explore Cases",
         "stats_donors": "Generous Donors",

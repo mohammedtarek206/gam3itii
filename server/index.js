@@ -85,21 +85,21 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.json({ success: true, message: 'Jam3iyati API Root' });
+  res.json({ success: true, message: 'Benna API Root' });
 });
 
 // Temporary route to seed the admin user on Vercel
 app.get('/api/seed-db', async (req, res) => {
   try {
     const User = require('./models/User');
-    const adminExists = await User.findOne({ email: 'mohammed@jam3iyati.com' });
+    const adminExists = await User.findOne({ email: 'mohammed@benna.eg' });
     if (adminExists) {
       return res.json({ success: true, message: '✅ الحساب الحقيقي موجود مسبقاً! يمكنك تسجيل الدخول.' });
     }
     
     await User.create({
       name: 'محمد طارق',
-      email: 'mohammed@jam3iyati.com',
+      email: 'mohammed@benna.eg',
       password: 'Binaa@password',
       role: 'admin',
       points: 1000,

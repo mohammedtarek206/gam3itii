@@ -72,7 +72,7 @@ export default function Navbar() {
       <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
         <div className="navbar-inner">
           <Link to="/" className="navbar-logo">
-            🌿 جمعيتي
+            🌿 {t('nav.brand')}
           </Link>
 
           <div className="navbar-links">

@@ -7,8 +7,8 @@ export default function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <div className="logo">🌿 جمعيتي</div>
-            <p>منصة جمعيتي الخيرية — نربط المحسنين بالمحتاجين من خلال نظام شفاف وموثوق لإدارة التبرعات والحالات الإنسانية.</p>
+            <div className="logo">🌿 بناء</div>
+            <p>منصة بناء الخيرية — نربط المحسنين بالمحتاجين من خلال نظام شفاف وموثوق لإدارة التبرعات والحالات الإنسانية.</p>
             <div className="footer-social">
               <a href="#" aria-label="Facebook"><FaFacebook /></a>
               <a href="#" aria-label="Twitter"><FaTwitter /></a>
@@ -40,14 +40,14 @@ export default function Footer() {
           <div className="footer-col">
             <h4>تواصل معنا</h4>
             <ul>
-              <li><a href="mailto:info@jam3iyati.eg">info@jam3iyati.eg</a></li>
+              <li><a href="mailto:info@benna.eg">info@benna.eg</a></li>
               <li><a href="tel:+201000000000">01000000000+</a></li>
               <li><a href="#">واتساب: 01000000000</a></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} جمعيتي الخيرية — جميع الحقوق محفوظة | تم التطوير بواسطة <strong>شركة أرقام</strong></p>
+          <p>© {new Date().getFullYear()} بناء الخيرية — جميع الحقوق محفوظة | تم التطوير بواسطة <strong>شركة أرقام</strong></p>
         </div>
       </div>
     </footer>

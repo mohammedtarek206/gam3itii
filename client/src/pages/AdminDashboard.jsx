@@ -163,7 +163,7 @@ export default function AdminDashboard() {
     <div className="admin-layout">
       {/* Sidebar */}
       <aside className="admin-sidebar">
-        <div className="admin-sidebar-logo">🌿 جمعيتي <span>Admin</span></div>
+        <div className="admin-sidebar-logo">🌿 بناء <span>Admin</span></div>
         <nav className="admin-nav">
           {NAV_ITEMS.map((item) => (
             <button key={item.key} className={`admin-nav-item${tab === item.key ? ' active' : ''}`} onClick={() => setTab(item.key)}>

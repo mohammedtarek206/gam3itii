@@ -37,7 +37,7 @@ export default function JobsPage() {
       <div className="page-header">
         <div className="container">
           <h1>💼 {t('jobs.title')}</h1>
-          <p>انضم لفريق جمعيتي وكن جزءاً من مسيرة الخير</p>
+          <p>انضم لفريق بناء وكن جزءاً من مسيرة الخير</p>
         </div>
       </div>
 
