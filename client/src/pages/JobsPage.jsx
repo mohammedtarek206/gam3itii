@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../api/axios';
 import JobCard from '../components/JobCard';
+import SEO from '../components/SEO';
 import { FaSearch } from 'react-icons/fa';
 
 const TYPES = [
@@ -34,6 +35,11 @@ export default function JobsPage() {
 
   return (
     <div className="fade-in">
+      <SEO 
+        title="الوظائف والتطوع" 
+        description="انضم لفريق عمل مؤسسة بناء للجميع أو تطوع معنا للمساهمة في تقديم الدعم والمساعدة للمحتاجين في مجتمعنا."
+        canonicalUrl="https://benna-for-all.org/jobs" 
+      />
       <div className="page-header">
         <div className="container">
           <h1>💼 {t('jobs.title')}</h1>

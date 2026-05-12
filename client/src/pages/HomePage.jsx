@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../api/axios';
 import CaseCard from '../components/CaseCard';
 import JobCard from '../components/JobCard';
+import SEO from '../components/SEO';
 import { FaHeart, FaHandHoldingHeart, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 function AnimatedNumber({ target, inView, suffix = '' }) {
@@ -57,6 +58,10 @@ export default function HomePage() {
 
   return (
     <div className="fade-in">
+      <SEO 
+        title="الرئيسية" 
+        canonicalUrl="https://benna-for-all.org/" 
+      />
       {/* ======= HERO ======= */}
       <section className="hero">
         <div className="container">

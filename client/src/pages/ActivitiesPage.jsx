@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import SEO from '../components/SEO';
 import {
   FaSearch, FaCalendarAlt, FaMapMarkerAlt, FaUsers,
   FaCheckCircle, FaTimes, FaRunning,
@@ -262,6 +263,11 @@ export default function ActivitiesPage() {
 
   return (
     <div className="fade-in">
+      <SEO 
+        title="الأنشطة والفعاليات" 
+        description="اكتشف وشارك في أنشطة وفعاليات مؤسسة بناء للجميع. سجل حضورك في المبادرات التطوعية المجتمعية المختلفة."
+        canonicalUrl="https://benna-for-all.org/activities" 
+      />
       <div className="page-header">
         <div className="container">
           <h1>🎯 الأنشطة والفعاليات</h1>

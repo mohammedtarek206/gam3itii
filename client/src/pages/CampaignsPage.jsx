@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import SEO from '../components/SEO';
 import { FaShareAlt, FaPlus, FaTimes } from 'react-icons/fa';
 
 export default function CampaignsPage() {
@@ -46,6 +47,11 @@ export default function CampaignsPage() {
 
   return (
     <div className="fade-in">
+      <SEO 
+        title="الحملات الخيرية" 
+        description="شارك في حملات الخير ومشاريع التنمية في مؤسسة بناء للجميع أو أنشئ حملتك الخاصة لجمع التبرعات لصالح القضايا الإنسانية."
+        canonicalUrl="https://benna-for-all.org/campaigns" 
+      />
       <div className="page-header">
         <div className="container">
           <h1>🌟 الحملات الخيرية</h1>

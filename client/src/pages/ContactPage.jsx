@@ -1,4 +1,5 @@
 import { FaWhatsapp, FaEnvelope, FaFacebook, FaInstagram, FaPhone, FaTwitter } from 'react-icons/fa';
+import SEO from '../components/SEO';
 
 export default function ContactPage() {
   const contacts = [
@@ -12,6 +13,11 @@ export default function ContactPage() {
 
   return (
     <div className="fade-in">
+      <SEO 
+        title="تواصل معنا" 
+        description="تواصل مع مؤسسة بناء للجميع للاستفسارات، تقديم الشكاوى، أو اقتراح أفكار للعمل الخيري. نحن هنا للرد على كافة أسئلتكم."
+        canonicalUrl="https://benna-for-all.org/contact" 
+      />
       <div className="page-header">
         <div className="container">
           <h1>📞 تواصل معنا</h1>

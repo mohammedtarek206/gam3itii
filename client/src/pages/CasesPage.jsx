@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../api/axios';
 import CaseCard from '../components/CaseCard';
+import SEO from '../components/SEO';
 import { FaSearch, FaFilter } from 'react-icons/fa';
 
 const CATEGORIES = [
@@ -57,6 +58,11 @@ export default function CasesPage() {
 
   return (
     <div className="fade-in">
+      <SEO 
+        title="الحالات الإنسانية" 
+        description="تصفح الحالات الإنسانية التي تحتاج إلى دعمك في مؤسسة بناء للجميع. تبرع الآن لتحدث فرقاً حقيقياً."
+        canonicalUrl="https://benna-for-all.org/cases" 
+      />
       {/* Header */}
       <div className="page-header">
         <div className="container">
