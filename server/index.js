@@ -27,7 +27,9 @@ const allowedOrigins = [
   'http://localhost:5000',
   'http://127.0.0.1:5173',
   'https://gameia-wine.vercel.app',
-  'https://binaa-gray.vercel.app'
+  'https://binaa-gray.vercel.app',
+  'https://bennaforall.org',
+  'https://www.bennaforall.org'
 ];
 
 app.use(cors({
