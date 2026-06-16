@@ -9,24 +9,22 @@ const BADGE_ICONS = { 'فاعل خير': '⭐', 'سفير الخير': '🏆' };
 export default function DashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [donations, setDonations] = useState([]);
   const [applications, setApplications] = useState([]);
   const [myActivities, setMyActivities] = useState([]);
-  const [tab, setTab] = useState('donations');
+  const [tab, setTab] = useState('applications');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
     Promise.all([
-      api.get('/donations/my'),
       api.get('/applications/my'),
       api.get('/activities/my/registrations'),
     ])
-      .then(([d, a, act]) => {
-        setDonations(d.data.data || []);
+      .then(([a, act]) => {
         setApplications(a.data.data || []);
         setMyActivities(act.data.data || []);
       })
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, [user]);
 
@@ -62,7 +60,7 @@ export default function DashboardPage() {
       <div className="page-header">
         <div className="container">
           <h1>👤 لوحتي الشخصية</h1>
-          <p>أهلاً {user.name}! هنا تجد كل تبرعاتك وطلباتك وأنشطتك</p>
+          <p>أهلاً {user.name}! هنا تجد طلباتك وأنشطتك</p>
         </div>
       </div>
 
@@ -88,10 +86,6 @@ export default function DashboardPage() {
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>نقاط</div>
               </div>
               <div>
-                <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary)' }}>{donations.length}</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>تبرع</div>
-              </div>
-              <div>
                 <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary)' }}>{applications.length}</div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>طلب وظيفي</div>
               </div>
@@ -105,9 +99,6 @@ export default function DashboardPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-          <button onClick={() => setTab('donations')} style={tabStyle('donations')}>
-            <FaHeart /> تبرعاتي ({donations.length})
-          </button>
           <button onClick={() => setTab('applications')} style={tabStyle('applications')}>
             <FaBriefcase /> طلباتي ({applications.length})
           </button>
@@ -118,41 +109,6 @@ export default function DashboardPage() {
 
         {loading ? <div className="spinner" /> : (
           <>
-            {/* DONATIONS TAB */}
-            {tab === 'donations' && (
-              donations.length === 0 ? (
-                <div className="empty-state">
-                  <div className="empty-icon">💚</div>
-                  <h3>لم تتبرع بعد</h3>
-                  <Link to="/cases" className="btn btn-primary btn-sm" style={{ marginTop: '1rem' }}>اكتشف الحالات</Link>
-                </div>
-              ) : (
-                <div className="table-wrap">
-                  <table className="data-table">
-                    <thead>
-                      <tr>
-                        <th>الحالة / الحملة</th>
-                        <th>المبلغ</th>
-                        <th>طريقة الدفع</th>
-                        <th>النوع</th>
-                        <th>التاريخ</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {donations.map((d) => (
-                        <tr key={d._id}>
-                          <td>{d.case?.title || d.campaign?.title || 'تبرع عام'}</td>
-                          <td><strong style={{ color: 'var(--primary)' }}>{d.amount?.toLocaleString('ar-EG')} جنيه</strong></td>
-                          <td>{d.method === 'vodafone_cash' ? '📱 فودافون' : d.method === 'bank_card' ? '💳 كارت' : '⚡ InstaPay'}</td>
-                          <td><span className="badge badge-gray">{d.recurring === 'none' ? 'مرة واحدة' : d.recurring === 'monthly' ? 'شهري' : 'أسبوعي'}</span></td>
-                          <td style={{ fontSize: '0.83rem', color: 'var(--text-muted)' }}>{new Date(d.createdAt).toLocaleDateString('ar-EG')}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )
-            )}
 
             {/* APPLICATIONS TAB */}
             {tab === 'applications' && (
