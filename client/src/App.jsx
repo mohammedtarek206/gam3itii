@@ -39,7 +39,6 @@ const Layout = ({ children }) => (
     <Navbar />
     <main>{children}</main>
     <Footer />
-    <FloatingDonateBtn />
   </>
 );
 
@@ -50,9 +49,9 @@ export default function App() {
       <Routes>
         {/* Public routes with layout */}
         <Route path="/" element={<Layout><HomePage /></Layout>} />
-        <Route path="/cases" element={<Layout><CasesPage /></Layout>} />
-        <Route path="/cases/:id" element={<Layout><CaseDetailPage /></Layout>} />
-        <Route path="/campaigns" element={<Layout><CampaignsPage /></Layout>} />
+        <Route path="/cases" element={<Navigate to="/" replace />} />
+        <Route path="/cases/:id" element={<Navigate to="/" replace />} />
+        <Route path="/campaigns" element={<Navigate to="/" replace />} />
         <Route path="/jobs" element={<Layout><JobsPage /></Layout>} />
         <Route path="/jobs/:id" element={<Layout><JobDetailPage /></Layout>} />
         <Route path="/contact" element={<Layout><ContactPage /></Layout>} />

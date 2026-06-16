@@ -59,12 +59,10 @@ export default function Navbar() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const links = [
-    { to: '/', label: t('nav.home') },
-    { to: '/cases', label: t('nav.cases') },
-    { to: '/campaigns', label: t('nav.campaigns') },
-    { to: '/activities', label: 'الأنشطة' },
-    { to: '/jobs', label: t('nav.jobs') },
-    { to: '/contact', label: t('nav.contact') },
+    { to: '/', label: 'الرئيسية' },
+    { to: '/activities', label: 'الأنشطة والفعاليات' },
+    { to: '/jobs', label: 'الوظائف' },
+    { to: '/contact', label: 'تواصل معنا' },
   ];
 
   return (

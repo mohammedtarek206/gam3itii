@@ -7,8 +7,8 @@ export default function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <div className="logo">🌿 بناء</div>
-            <p>منصة بناء الخيرية — نربط المحسنين بالمحتاجين من خلال نظام شفاف وموثوق لإدارة التبرعات والحالات الإنسانية.</p>
+            <div className="logo">🌿 جمعية بناء</div>
+            <p>جمعية بناء للتنمية بالمنيا — جمعية أهلية مشهرة برقم 1627 لسنة 2005، تعمل على تحقيق التنمية الشاملة للفئات الأكثر احتياجًا من خلال برامج ومبادرات تنموية مستدامة.</p>
             <div className="footer-social">
               <a href="#" aria-label="Facebook"><FaFacebook /></a>
               <a href="#" aria-label="Twitter"><FaTwitter /></a>
@@ -21,20 +21,19 @@ export default function Footer() {
             <h4>روابط سريعة</h4>
             <ul>
               <li><Link to="/">الرئيسية</Link></li>
-              <li><Link to="/cases">الحالات</Link></li>
-              <li><Link to="/campaigns">الحملات</Link></li>
+              <li><Link to="/activities">الأنشطة والفعاليات</Link></li>
               <li><Link to="/jobs">الوظائف</Link></li>
               <li><Link to="/contact">تواصل معنا</Link></li>
             </ul>
           </div>
           <div className="footer-col">
-            <h4>خدماتنا</h4>
+            <h4>محاور عملنا</h4>
             <ul>
-              <li><a href="#">التبرع الإلكتروني</a></li>
-              <li><a href="#">كفالة يتيم</a></li>
-              <li><a href="#">زكاة المال</a></li>
-              <li><a href="#">التطوع</a></li>
-              <li><a href="#">الحملات الخيرية</a></li>
+              <li><a href="#about">نبذة عن الجمعية</a></li>
+              <li><a href="#vision">رؤيتنا ورسالتنا</a></li>
+              <li><a href="#values">القيم الحاكمة</a></li>
+              <li><a href="#board">مجلس الإدارة</a></li>
+              <li><a href="#stats">إحصائيات وإنجازات</a></li>
             </ul>
           </div>
           <div className="footer-col">
@@ -42,12 +41,12 @@ export default function Footer() {
             <ul>
               <li><a href="mailto:info@benna.eg">info@benna.eg</a></li>
               <li><a href="tel:+201000000000">01000000000+</a></li>
-              <li><a href="#">واتساب: 01000000000</a></li>
+              <li><a href="#">المنيا، جمهورية مصر العربية</a></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} بناء الخيرية — جميع الحقوق محفوظة | تم التطوير بواسطة <strong>شركة أرقام</strong></p>
+          <p>© {new Date().getFullYear()} جمعية بناء للتنمية بالمنيا — جميع الحقوق محفوظة</p>
         </div>
       </div>
     </footer>
