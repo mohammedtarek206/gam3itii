@@ -94,21 +94,40 @@ app.get('/', (req, res) => {
 app.get('/api/seed-db', async (req, res) => {
   try {
     const User = require('./models/User');
-    const adminExists = await User.findOne({ email: 'mohammed@benna.eg' });
-    if (adminExists) {
-      return res.json({ success: true, message: '✅ الحساب الحقيقي موجود مسبقاً! يمكنك تسجيل الدخول.' });
+    
+    // Seed/Reset mohammed@benna.eg
+    let mohammedAdmin = await User.findOne({ email: 'mohammed@benna.eg' });
+    if (mohammedAdmin) {
+      mohammedAdmin.password = 'Binaa@password';
+      await mohammedAdmin.save();
+    } else {
+      await User.create({
+        name: 'محمد طارق',
+        email: 'mohammed@benna.eg',
+        password: 'Binaa@password',
+        role: 'admin',
+        points: 1000,
+        badges: ['مدير المنصة']
+      });
+    }
+
+    // Seed/Reset admin@benna.eg
+    let systemAdmin = await User.findOne({ email: 'admin@benna.eg' });
+    if (systemAdmin) {
+      systemAdmin.password = 'Admin@123';
+      await systemAdmin.save();
+    } else {
+      await User.create({
+        name: 'مدير النظام',
+        email: 'admin@benna.eg',
+        password: 'Admin@123',
+        role: 'admin',
+        points: 9999,
+        badges: ['سفير الخير', 'فاعل خير']
+      });
     }
     
-    await User.create({
-      name: 'محمد طارق',
-      email: 'mohammed@benna.eg',
-      password: 'Binaa@password',
-      role: 'admin',
-      points: 1000,
-      badges: ['مدير المنصة']
-    });
-    
-    res.json({ success: true, message: '✅ تم زرع الحساب الحقيقي بنجاح! يمكنك العودة وتسجيل الدخول الآن.' });
+    res.json({ success: true, message: '✅ تم تهيئة حسابات المسؤولين (Admins) بنجاح على قاعدة البيانات!' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
