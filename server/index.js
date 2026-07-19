@@ -129,6 +129,8 @@ apiRouter.use('/activities', require('./routes/activities'));
 apiRouter.use('/projects', require('./routes/projects'));
 apiRouter.use('/volunteers', require('./routes/volunteers'));
 apiRouter.use('/assessments', require('./routes/assessments'));
+apiRouter.use('/media', require('./routes/media'));
+apiRouter.use('/activity-logs', require('./routes/activityLogs'));
 
 app.use('/api', apiRouter);
 app.use(apiRouter); // Fallback

@@ -37,7 +37,23 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password)))
       return res.status(401).json({ success: false, message: 'بيانات الدخول غير صحيحة' });
+      
+    if (user.isActive === false) {
+      return res.status(403).json({ success: false, message: 'تم تعطيل هذا الحساب. يرجى مراجعة الإدارة.' });
+    }
+
     const token = signToken(user._id);
+    
+    // Log login activity
+    const ActivityLog = require('../models/ActivityLog');
+    ActivityLog.create({
+      user: user._id,
+      action: 'LOGIN',
+      entity: 'Auth',
+      details: 'تم تسجيل الدخول بنجاح',
+      ipAddress: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress
+    }).catch(console.error);
+
     res.json({ success: true, token, user: { id: user._id, name: user.name, email: user.email, role: user.role, points: user.points, badges: user.badges } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
