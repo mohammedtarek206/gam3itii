@@ -21,28 +21,10 @@ if (process.env.NODE_ENV !== 'production' || !process.env.MONGODB_URI) {
   });
 }
 
-// Permissive CORS for SPA
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5000',
-  'http://127.0.0.1:5173',
-  'https://gameia-wine.vercel.app',
-  'https://binaa-gray.vercel.app',
-  'https://benaaforall.org',
-  'https://www.benaaforall.org'
-];
-
 app.use(cors({
   origin: function(origin, callback) {
-    // Check if origin is in list OR it's a Vercel subdomain
-    const isVercel = origin && (origin.endsWith('.vercel.app') || origin.includes('vercel.app'));
-    
-    if (!origin || allowedOrigins.indexOf(origin) !== -1 || isVercel || process.env.NODE_ENV !== 'production') {
-      callback(null, true);
-    } else {
-      console.warn('Blocked by CORS:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
+    // Allow all origins dynamically to prevent CORS errors across deployments
+    callback(null, origin || true);
   },
   credentials: true
 }));
