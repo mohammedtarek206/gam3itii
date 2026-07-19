@@ -73,21 +73,36 @@ export default function AdminDashboard() {
     e.preventDefault();
     try {
       const payload = {
-        title: { ar: projectForm.titleAr, en: projectForm.titleEn },
-        description: { ar: projectForm.descAr, en: projectForm.descEn },
-        type: projectForm.type, status: projectForm.status, isHidden: projectForm.isHidden, order: Number(projectForm.order),
+        titleAr: projectForm.titleAr,
+        titleEn: projectForm.titleEn,
+        descAr: projectForm.descAr,
+        descEn: projectForm.descEn,
+        type: projectForm.type,
+        status: projectForm.status,
+        isHidden: projectForm.isHidden,
+        order: Number(projectForm.order),
         mainImage: projectForm.mainImage,
-        images: projectForm.images.split('\n').filter(Boolean),
-        pdfLinks: projectForm.pdfLinks.split('\n').filter(Boolean),
+        images: projectForm.images,       // raw string - server splits by \n
+        pdfLinks: projectForm.pdfLinks,   // raw string - server splits by \n
         videoLink: projectForm.videoLink
       };
-      if (editItem) { await api.put(`/projects/${editItem._id}`, payload); toast.success('تم التعديل بنجاح'); } 
-      else { await api.post('/projects', payload); toast.success('تمت الإضافة بنجاح'); }
-      setShowProjectForm(false); setEditItem(null);
+      if (editItem) {
+        await api.put(`/projects/${editItem._id}`, payload);
+        toast.success('تم التعديل بنجاح ✅');
+      } else {
+        await api.post('/projects', payload);
+        toast.success('تمت إضافة المشروع بنجاح ✅');
+      }
+      setShowProjectForm(false);
+      setEditItem(null);
       setProjectForm({ titleAr: '', titleEn: '', descAr: '', descEn: '', type: 'current', status: 'active', isHidden: false, order: 0, mainImage: '', images: '', pdfLinks: '', videoLink: '' });
       fetchData('projects');
-    } catch (err) { toast.error(err.response?.data?.message || err.message); }
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message || 'حدث خطأ';
+      toast.error(msg);
+    }
   };
+
 
   const handleDeleteProject = async (id) => {
     if (!window.confirm('هل أنت متأكد من حذف هذا المشروع؟')) return;
