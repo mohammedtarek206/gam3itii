@@ -13,7 +13,7 @@ import {
 import toast from 'react-hot-toast';
 
 export default function HomePage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activities, setActivities] = useState([]);
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [contactForm, setContactForm] = useState({ name: '', email: '', subject: '', message: '' });
@@ -268,7 +268,22 @@ export default function HomePage() {
         }} />
       </section>
 
-      {/*              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+      {/* ======= SECTION 2: ABOUT US ======= */}
+      <section id="about" className="section" style={{ background: '#ffffff', position: 'relative', overflow: 'hidden' }}>
+        <div className="container">
+          <div style={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
                 <span style={{ fontSize: '2.5rem' }}>🌿</span>
                 <h2 style={{ fontSize: '2rem', color: 'var(--text-dark)' }}>{t('home.about_title')}</h2>
               </div>
