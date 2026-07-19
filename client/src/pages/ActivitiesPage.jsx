@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -9,27 +10,9 @@ import {
   FaCheckCircle, FaTimes, FaRunning,
 } from 'react-icons/fa';
 
-const CATEGORIES = [
-  { key: 'all', label: 'الجميع', icon: '🌐' },
-  { key: 'educational', label: 'تعليمي', icon: '📚' },
-  { key: 'social', label: 'اجتماعي', icon: '🤝' },
-  { key: 'health', label: 'صحي', icon: '🏥' },
-  { key: 'sports', label: 'رياضي', icon: '⚽' },
-  { key: 'cultural', label: 'ثقافي', icon: '🎭' },
-  { key: 'volunteer', label: 'تطوعي', icon: '💚' },
-  { key: 'other', label: 'أخرى', icon: '✨' },
-];
-
-const STATUS_MAP = {
-  upcoming:  { label: 'قادم', cls: 'badge-blue' },
-  ongoing:   { label: 'جارٍ الآن', cls: 'badge-green' },
-  completed: { label: 'منتهي', cls: 'badge-gray' },
-  cancelled: { label: 'ملغى', cls: 'badge-red' },
-};
-
 function RegisterModal({ activity, onClose, onSuccess }) {
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: user?.name || '',
     phone: '',
@@ -41,15 +24,18 @@ function RegisterModal({ activity, onClose, onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.phone) { toast.error('رقم الهاتف مطلوب'); return; }
+    if (!form.phone) { 
+      toast.error(i18n.language === 'en' ? 'Phone number is required' : 'رقم الهاتف مطلوب'); 
+      return; 
+    }
     setLoading(true);
     try {
       await api.post(`/activities/${activity._id}/register`, form);
-      toast.success('🎉 تم تسجيلك بنجاح!');
+      toast.success(i18n.language === 'en' ? '🎉 Registered successfully!' : '🎉 تم تسجيلك بنجاح!');
       onSuccess();
       onClose();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'حدث خطأ');
+      toast.error(err.response?.data?.message || 'Error');
     } finally {
       setLoading(false);
     }
@@ -72,36 +58,38 @@ function RegisterModal({ activity, onClose, onSuccess }) {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.3rem', marginBottom: '0.25rem' }}>📋 تسجيل في النشاط</h2>
+            <h2 style={{ fontSize: '1.3rem', marginBottom: '0.25rem' }}>
+              📋 {i18n.language === 'en' ? 'Register for Activity' : 'تسجيل في النشاط'}
+            </h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{activity.title}</p>
           </div>
-          <button onClick={onClose} style={{ background: 'none', fontSize: '1.2rem', color: 'var(--text-muted)', padding: '0.2rem' }}>
+          <button onClick={onClose} style={{ background: 'none', fontSize: '1.2rem', color: 'var(--text-muted)', padding: '0.2rem', border: 'none', cursor: 'pointer' }}>
             <FaTimes />
           </button>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">الاسم الكامل *</label>
+            <label className="form-label">{i18n.language === 'en' ? 'Full Name *' : 'الاسم الكامل *'}</label>
             <input className="form-control" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
           </div>
           <div className="form-group">
-            <label className="form-label">رقم الهاتف *</label>
+            <label className="form-label">{i18n.language === 'en' ? 'Phone Number *' : 'رقم الهاتف *'}</label>
             <input className="form-control" type="tel" placeholder="01xxxxxxxxx" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
           </div>
           <div className="form-group">
-            <label className="form-label">البريد الإلكتروني</label>
+            <label className="form-label">{i18n.language === 'en' ? 'Email Address' : 'البريد الإلكتروني'}</label>
             <input className="form-control" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           </div>
           <div className="form-group">
-            <label className="form-label">ملاحظات (اختياري)</label>
-            <textarea className="form-control" rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="أي ملاحظات إضافية..." />
+            <label className="form-label">{i18n.language === 'en' ? 'Notes (Optional)' : 'ملاحظات (اختياري)'}</label>
+            <textarea className="form-control" rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder={i18n.language === 'en' ? 'Any additional notes...' : 'أي ملاحظات إضافية...'} />
           </div>
           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
             <button className="btn btn-primary" type="submit" disabled={loading} style={{ flex: 1, justifyContent: 'center' }}>
-              {loading ? <span className="spinner" style={{ width: 18, height: 18, borderWidth: 2 }} /> : <><FaCheckCircle /> تأكيد التسجيل</>}
+              {loading ? <span className="spinner" style={{ width: 18, height: 18, borderWidth: 2 }} /> : <><FaCheckCircle /> {i18n.language === 'en' ? 'Confirm Registration' : 'تأكيد التسجيل'}</>}
             </button>
-            <button className="btn btn-ghost" type="button" onClick={onClose}>إلغاء</button>
+            <button className="btn btn-ghost" type="button" onClick={onClose}>{i18n.language === 'en' ? 'Cancel' : 'إلغاء'}</button>
           </div>
         </form>
       </div>
@@ -110,13 +98,33 @@ function RegisterModal({ activity, onClose, onSuccess }) {
 }
 
 function ActivityCard({ activity, myRegistrations, onRegister, onCancel }) {
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const isRegistered = myRegistrations.some((r) => r.activity?._id === activity._id);
   const isFull = activity.maxParticipants > 0 && activity.registeredCount >= activity.maxParticipants;
   const canRegister = activity.status === 'upcoming' || activity.status === 'ongoing';
-  const cat = CATEGORIES.find((c) => c.key === activity.category);
-  const st = STATUS_MAP[activity.status] || STATUS_MAP.upcoming;
+
+  const categories = [
+    { key: 'all', label: i18n.language === 'en' ? 'All' : 'الجميع', icon: '🌐' },
+    { key: 'educational', label: i18n.language === 'en' ? 'Educational' : 'تعليمي', icon: '📚' },
+    { key: 'social', label: i18n.language === 'en' ? 'Social' : 'اجتماعي', icon: '🤝' },
+    { key: 'health', label: i18n.language === 'en' ? 'Health' : 'صحي', icon: '🏥' },
+    { key: 'sports', label: i18n.language === 'en' ? 'Sports' : 'رياضي', icon: '⚽' },
+    { key: 'cultural', label: i18n.language === 'en' ? 'Cultural' : 'ثقافي', icon: '🎭' },
+    { key: 'volunteer', label: i18n.language === 'en' ? 'Volunteer' : 'تطوعي', icon: '💚' },
+    { key: 'other', label: i18n.language === 'en' ? 'Other' : 'أخرى', icon: '✨' },
+  ];
+
+  const statusMap = {
+    upcoming:  { label: i18n.language === 'en' ? 'Upcoming' : 'قادم', cls: 'badge-blue' },
+    ongoing:   { label: i18n.language === 'en' ? 'Ongoing' : 'جارٍ الآن', cls: 'badge-green' },
+    completed: { label: i18n.language === 'en' ? 'Completed' : 'منتهي', cls: 'badge-gray' },
+    cancelled: { label: i18n.language === 'en' ? 'Cancelled' : 'ملغى', cls: 'badge-red' },
+  };
+
+  const cat = categories.find((c) => c.key === activity.category);
+  const st = statusMap[activity.status] || statusMap.upcoming;
 
   const spotsLeft = activity.maxParticipants > 0
     ? activity.maxParticipants - activity.registeredCount
@@ -131,7 +139,6 @@ function ActivityCard({ activity, myRegistrations, onRegister, onCancel }) {
     onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
     onMouseLeave={(e) => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}
     >
-      {/* Color bar based on category */}
       <div style={{ height: 5, background: 'linear-gradient(90deg, var(--primary), var(--accent))' }} />
 
       <div style={{ padding: '1.5rem' }}>
@@ -144,7 +151,7 @@ function ActivityCard({ activity, myRegistrations, onRegister, onCancel }) {
           </div>
           {isRegistered && (
             <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 700, background: 'var(--secondary)', padding: '0.2rem 0.6rem', borderRadius: 999 }}>
-              ✅ مسجّل
+              {i18n.language === 'en' ? '✅ Registered' : '✅ مسجّل'}
             </span>
           )}
         </div>
@@ -157,7 +164,9 @@ function ActivityCard({ activity, myRegistrations, onRegister, onCancel }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginBottom: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-body)' }}>
             <FaCalendarAlt style={{ color: 'var(--primary)', flexShrink: 0 }} />
-            <span>{new Date(activity.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            <span>
+              {new Date(activity.date).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-body)' }}>
             <FaMapMarkerAlt style={{ color: 'var(--primary)', flexShrink: 0 }} />
@@ -166,13 +175,12 @@ function ActivityCard({ activity, myRegistrations, onRegister, onCancel }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-body)' }}>
             <FaUsers style={{ color: 'var(--primary)', flexShrink: 0 }} />
             <span>
-              {activity.registeredCount} مشارك
-              {activity.maxParticipants > 0 && ` / ${activity.maxParticipants} (${spotsLeft > 0 ? `${spotsLeft} متبقية` : 'اكتمل'})`}
+              {activity.registeredCount} {i18n.language === 'en' ? 'Participants' : 'مشارك'}
+              {activity.maxParticipants > 0 && ` / ${activity.maxParticipants} (${spotsLeft > 0 ? (i18n.language === 'en' ? `${spotsLeft} left` : `${spotsLeft} متبقية`) : (i18n.language === 'en' ? 'Full' : 'اكتمل')})`}
             </span>
           </div>
         </div>
 
-        {/* Capacity bar */}
         {activity.maxParticipants > 0 && (
           <div style={{ background: '#f1f5f9', borderRadius: 999, height: 6, marginBottom: '1.25rem', overflow: 'hidden' }}>
             <div style={{
@@ -191,11 +199,11 @@ function ActivityCard({ activity, myRegistrations, onRegister, onCancel }) {
               className="btn btn-ghost btn-sm"
               style={{ width: '100%', justifyContent: 'center', color: 'var(--danger)', borderColor: 'var(--danger)' }}
             >
-              إلغاء التسجيل
+              {i18n.language === 'en' ? 'Cancel Registration' : 'إلغاء التسجيل'}
             </button>
           ) : isFull ? (
             <button disabled className="btn btn-ghost btn-sm" style={{ width: '100%', justifyContent: 'center', opacity: 0.5, cursor: 'not-allowed' }}>
-              اكتمل العدد
+              {i18n.language === 'en' ? 'Full Capacity' : 'اكتمل العدد'}
             </button>
           ) : (
             <button
@@ -206,13 +214,15 @@ function ActivityCard({ activity, myRegistrations, onRegister, onCancel }) {
               className="btn btn-primary btn-sm"
               style={{ width: '100%', justifyContent: 'center' }}
             >
-              <FaRunning /> سجّل الآن
+              <FaRunning /> {i18n.language === 'en' ? 'Register Now' : 'سجّل الآن'}
             </button>
           )
         )}
 
         {!canRegister && activity.status === 'completed' && (
-          <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>انتهى هذا النشاط</div>
+          <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+            {i18n.language === 'en' ? 'This activity has ended' : 'انتهى هذا النشاط'}
+          </div>
         )}
       </div>
     </div>
@@ -220,6 +230,7 @@ function ActivityCard({ activity, myRegistrations, onRegister, onCancel }) {
 }
 
 export default function ActivitiesPage() {
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const [activities, setActivities] = useState([]);
   const [myRegistrations, setMyRegistrations] = useState([]);
@@ -227,6 +238,17 @@ export default function ActivitiesPage() {
   const [category, setCategory] = useState('all');
   const [search, setSearch] = useState('');
   const [selectedActivity, setSelectedActivity] = useState(null);
+
+  const categories = [
+    { key: 'all', label: i18n.language === 'en' ? 'All' : 'الجميع', icon: '🌐' },
+    { key: 'educational', label: i18n.language === 'en' ? 'Educational' : 'تعليمي', icon: '📚' },
+    { key: 'social', label: i18n.language === 'en' ? 'Social' : 'اجتماعي', icon: '🤝' },
+    { key: 'health', label: i18n.language === 'en' ? 'Health' : 'صحي', icon: '🏥' },
+    { key: 'sports', label: i18n.language === 'en' ? 'Sports' : 'رياضي', icon: '⚽' },
+    { key: 'cultural', label: i18n.language === 'en' ? 'Cultural' : 'ثقافي', icon: '🎭' },
+    { key: 'volunteer', label: i18n.language === 'en' ? 'Volunteer' : 'تطوعي', icon: '💚' },
+    { key: 'other', label: i18n.language === 'en' ? 'Other' : 'أخرى', icon: '✨' },
+  ];
 
   useEffect(() => { fetchActivities(); }, [category]);
   useEffect(() => { if (user) fetchMyRegistrations(); }, [user]);
@@ -250,28 +272,29 @@ export default function ActivitiesPage() {
   };
 
   const handleCancel = async (activityId) => {
-    if (!window.confirm('هل تريد إلغاء تسجيلك في هذا النشاط؟')) return;
+    const msg = i18n.language === 'en' ? 'Do you want to cancel your registration in this activity?' : 'هل تريد إلغاء تسجيلك في هذا النشاط؟';
+    if (!window.confirm(msg)) return;
     try {
       await api.delete(`/activities/${activityId}/register`);
-      toast.success('تم إلغاء التسجيل');
+      toast.success(i18n.language === 'en' ? 'Registration cancelled' : 'تم إلغاء التسجيل');
       fetchMyRegistrations();
       fetchActivities();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'حدث خطأ');
+      toast.error(err.response?.data?.message || 'Error');
     }
   };
 
   return (
     <div className="fade-in">
       <SEO 
-        title="الأنشطة والفعاليات" 
-        description="اكتشف وشارك في أنشطة وفعاليات مؤسسة بناء للجميع. سجل حضورك في المبادرات التطوعية المجتمعية المختلفة."
-        canonicalUrl="https://benna-for-all.org/activities" 
+        title={i18n.language === 'en' ? 'Activities & Events' : 'الأنشطة والفعاليات'} 
+        description={t('home.hero_sub')}
+        canonicalUrl="https://benaa-for-all.org/activities" 
       />
       <div className="page-header">
         <div className="container">
-          <h1>🎯 الأنشطة والفعاليات</h1>
-          <p>اكتشف أنشطة بناء وسجّل في الفعاليات القادمة</p>
+          <h1>🎯 {i18n.language === 'en' ? 'Activities & Events' : 'الأنشطة والفعاليات'}</h1>
+          <p>{t('home.hero_highlight')}</p>
         </div>
       </div>
 
@@ -280,7 +303,7 @@ export default function ActivitiesPage() {
         <form onSubmit={(e) => { e.preventDefault(); fetchActivities(); }} style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem' }}>
           <input
             className="form-control"
-            placeholder="ابحث عن نشاط..."
+            placeholder={i18n.language === 'en' ? 'Search activity...' : 'ابحث عن نشاط...'}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{ flex: 1 }}
@@ -290,7 +313,7 @@ export default function ActivitiesPage() {
 
         {/* Category filter */}
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat.key}
               onClick={() => setCategory(cat.key)}
@@ -318,7 +341,11 @@ export default function ActivitiesPage() {
           }}>
             <FaCheckCircle style={{ fontSize: '1.4rem', flexShrink: 0 }} />
             <span style={{ fontWeight: 600 }}>
-              أنت مسجّل في {myRegistrations.filter(r => r.activity?.status !== 'completed').length} نشاط — شاهد <Link to="/dashboard" style={{ color: '#fff', textDecoration: 'underline' }}>لوحتك الشخصية</Link>
+              {i18n.language === 'en' ? (
+                <>You are registered in {myRegistrations.filter(r => r.activity?.status !== 'completed').length} activities — view <Link to="/dashboard" style={{ color: '#fff', textDecoration: 'underline' }}>My Dashboard</Link></>
+              ) : (
+                <>أنت مسجّل في {myRegistrations.filter(r => r.activity?.status !== 'completed').length} نشاط — شاهد <Link to="/dashboard" style={{ color: '#fff', textDecoration: 'underline' }}>لوحتك الشخصية</Link></>
+              )}
             </span>
           </div>
         )}
@@ -329,8 +356,10 @@ export default function ActivitiesPage() {
         ) : activities.length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">🎯</div>
-            <h3>لا توجد أنشطة متاحة حالياً</h3>
-            <p style={{ color: 'var(--text-muted)' }}>تابعنا لمعرفة أحدث الفعاليات</p>
+            <h3>{i18n.language === 'en' ? 'No activities available' : 'لا توجد أنشطة متاحة حالياً'}</h3>
+            <p style={{ color: 'var(--text-muted)' }}>
+              {i18n.language === 'en' ? 'Follow us for upcoming activities' : 'تابعنا لمعرفة أحدث الفعاليات'}
+            </p>
           </div>
         ) : (
           <div className="grid-3">

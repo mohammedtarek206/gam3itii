@@ -15,6 +15,7 @@ import JobDetailPage from './pages/JobDetailPage';
 import JobApplyPage from './pages/JobApplyPage';
 import ContactPage from './pages/ContactPage';
 import ActivitiesPage from './pages/ActivitiesPage';
+import ProjectsPage from './pages/ProjectsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -49,6 +50,7 @@ export default function App() {
       <Routes>
         {/* Public routes with layout */}
         <Route path="/" element={<Layout><HomePage /></Layout>} />
+        <Route path="/projects" element={<Layout><ProjectsPage /></Layout>} />
         <Route path="/cases" element={<Navigate to="/" replace />} />
         <Route path="/cases/:id" element={<Navigate to="/" replace />} />
         <Route path="/campaigns" element={<Navigate to="/" replace />} />

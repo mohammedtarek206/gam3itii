@@ -7,20 +7,20 @@ const SEO = ({
   description, 
   keywords, 
   canonicalUrl, 
-  ogImage = 'https://benna-for-all.org/og-image.jpg',
+  ogImage = 'https://benaa-for-all.org/og-image.jpg',
   ogType = 'website'
 }) => {
   const { i18n } = useTranslation();
   const lang = i18n.language || 'ar';
   
-  const siteName = lang === 'ar' ? 'مؤسسة بناء للجميع' : 'Benna For All Foundation';
+  const siteName = lang === 'ar' ? 'جمعية بناء للتنمية بالمنيا' : 'Benaa For All Foundation';
   const defaultTitle = lang === 'ar' 
-    ? 'Benna For All Foundation | مؤسسة بناء للجميع للتبرعات والعمل الخيري'
-    : 'Benna For All Foundation | Charity & Donation Platform';
+    ? 'Benaa For All Foundation | جمعية بناء للتنمية بالمنيا'
+    : 'Benaa For All Foundation | Community Development NGO';
   const defaultDescription = lang === 'ar'
-    ? 'Benna For All Foundation هي مؤسسة خيرية متخصصة في التبرعات، دعم الأسر المحتاجة، الحملات الإنسانية، والعمل المجتمعي لصناعة أثر حقيقي ومستدام.'
-    : 'Benna For All Foundation is a charity organization dedicated to donations, helping families in need, humanitarian campaigns, and community work to make a real impact.';
-  const defaultKeywords = 'Benna, بناء, مؤسسة بناء, Benna For All, جمعية خيرية, منصة تبرعات, حملات خيرية, دعم المحتاجين, وظائف خيرية, العمل الإنساني, Charity, Donation, Humanitarian';
+    ? 'جمعية بناء للتنمية بالمنيا هي جمعية أهلية مشهرة برقم 1627 لسنة 2005، تعمل على تحقيق التنمية الشاملة للفئات الأكثر احتياجاً من خلال برامج ومبادرات تنموية مستدامة.'
+    : 'Benaa For All Foundation is a non-governmental organization dedicated to sustainable community development, volunteering, and social impact in Minya, Egypt.';
+  const defaultKeywords = 'Benaa, بناء, جمعية بناء, Benaa For All, جمعية بناء للتنمية بالمنيا, تطوع, مشروعات تنموية, المنيا, NGO Egypt, Charity, Community Development';
 
   const finalTitle = title ? `${title} | ${siteName}` : defaultTitle;
   const finalDescription = description || defaultDescription;

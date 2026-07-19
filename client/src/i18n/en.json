@@ -3,23 +3,24 @@
     "translation": {
       "nav": {
         "home": "Home",
+        "projects": "Our Projects",
         "cases": "Cases",
         "campaigns": "Campaigns",
         "jobs": "Jobs",
-        "contact": "Contact",
+        "contact": "Contact Us",
         "login": "Login",
         "register": "Register",
         "dashboard": "My Dashboard",
-        "admin": "Admin Panel",
+        "admin": "Admin Dashboard",
         "logout": "Logout",
-        "brand": "Benna"
+        "brand": "Benaa For All"
       },
       "home": {
-        "hero_title": "Together We",
-        "hero_highlight": "Make a Difference",
-        "hero_sub": "Benna connects those in need with generous donors. Help create real change in people's lives.",
+        "hero_title": "Benaa For All Foundation",
+        "hero_highlight": "Together We Build a Better Future",
+        "hero_sub": "A non-governmental organization registered under No. 1627 of 2005. We work to achieve comprehensive development for the most needy groups through sustainable development programs and initiatives.",
         "donate_now": "Donate Now",
-        "explore_cases": "Explore Cases",
+        "explore_cases": "Explore Projects",
         "stats_donors": "Generous Donors",
         "stats_donated": "Total Donated",
         "stats_beneficiaries": "Beneficiaries",
@@ -28,7 +29,53 @@
         "see_all": "See All",
         "success_stories": "Success Stories",
         "latest_jobs": "Latest Jobs",
-        "join_team": "Join Our Team"
+        "join_team": "Join Our Team",
+        "about_title": "About Benaa",
+        "about_desc": "Benaa For All Foundation is a non-governmental community development organization aiming to support underprivileged families and achieve sustainable development in Minya Governorate through integrated community programs based on experience and collaborative action.",
+        "vision_title": "Our Vision",
+        "vision_desc": "Comprehensive development that supports marginalized groups without discrimination and invests in community resources and potentials.",
+        "mission_title": "Our Mission",
+        "mission_desc": "We aim to achieve comprehensive development for the most needy groups. Our programs are built on knowledge, experience, and collaborative action, respecting equality, protection, and environment preservation for a decent life.",
+        "values_title": "💎 Our Values",
+        "values_subtitle": "The value framework of Benaa represents the primary pillar on which it builds its vision, strategic direction, and decisions.",
+        "board_title": "👥 Board of Directors",
+        "board_subtitle": "A selected group of national competencies supervising the strategies and plans of Benaa to ensure impact and sustainability.",
+        "stats_title": "📊 Benaa Statistics",
+        "stats_subtitle": "Numbers and achievements reflecting the scale of impact and responsibility in community development in Minya.",
+        "partners_title": "🤝 Partners & Supporters",
+        "partners_subtitle": "Partners in success whom we cherish cooperating with to achieve sustainable development goals.",
+        "news_title": "📢 News & Activities",
+        "news_subtitle": "Follow the latest events, initiatives, and training workshops launched by the association in Minya."
+      },
+      "projects": {
+        "title": "Association Projects",
+        "current": "🟢 Current Projects",
+        "past": "⚪ Past Projects",
+        "details": "View Details",
+        "volunteer": "Volunteer With Us",
+        "no_projects": "No projects available currently",
+        "beneficiaries": "Beneficiary",
+        "start_date": "Start Date",
+        "end_date": "End Date",
+        "location": "Location"
+      },
+      "volunteer": {
+        "title": "Volunteer Form",
+        "full_name": "Full Name *",
+        "national_id": "National ID (Optional)",
+        "email": "Email Address *",
+        "phone": "Phone Number *",
+        "governorate": "Governorate *",
+        "city": "City *",
+        "age": "Age *",
+        "education": "Education Level *",
+        "profession": "Profession",
+        "skills": "Skills",
+        "motivation": "Why do you want to volunteer? *",
+        "days": "Available Days",
+        "cv": "CV / Resume (Optional)",
+        "submit": "Submit Volunteer Application",
+        "success": "Volunteer request submitted successfully!"
       },
       "cases": {
         "title": "Cases",
@@ -51,7 +98,7 @@
         "no_cases": "No cases available"
       },
       "jobs": {
-        "title": "Jobs",
+        "title": "Available Jobs",
         "all_types": "All Types",
         "fulltime": "Full Time",
         "parttime": "Part Time",
@@ -63,36 +110,18 @@
         "tasks": "Responsibilities",
         "salary": "Salary",
         "no_jobs": "No jobs available currently",
-        "deadline": "Application Deadline"
+        "deadline": "Deadline"
       },
       "apply": {
         "title": "Apply for Position",
-        "name": "Full Name",
-        "email": "Email Address",
-        "phone": "Phone Number",
-        "cv": "CV / Resume (PDF/Word)",
+        "name": "Full Name *",
+        "email": "Email Address *",
+        "phone": "Phone Number *",
+        "cv": "CV / Resume *",
         "cover_letter": "Cover Letter",
         "cover_placeholder": "Write your cover letter here...",
         "submit": "Submit Application",
-        "success": "Your application was submitted successfully!",
-        "already_applied": "You have already applied for this job"
-      },
-      "donate": {
-        "title": "Donate Now",
-        "choose_amount": "Choose Amount",
-        "custom": "Custom Amount",
-        "method": "Payment Method",
-        "vodafone": "Vodafone Cash",
-        "bank": "Bank Card",
-        "instapay": "InstaPay",
-        "recurring": "Recurring Donation",
-        "once": "One Time",
-        "weekly": "Weekly",
-        "monthly": "Monthly",
-        "anonymous": "Donate Anonymously",
-        "confirm": "Confirm Donation",
-        "success": "Thank you! Your donation was successful 🎉",
-        "points_earned": "You earned {{points}} points!"
+        "success": "Your application was submitted successfully!"
       },
       "auth": {
         "login": "Login",
@@ -116,7 +145,7 @@
         "no_applications": "You haven't applied to any jobs yet"
       },
       "status": {
-        "pending": "Pending",
+        "pending": "New / Pending",
         "reviewing": "Under Review",
         "accepted": "Accepted ✅",
         "rejected": "Rejected ❌",

@@ -123,72 +123,46 @@ export default function HomePage() {
   return (
     <div className="homepage-root" style={{ overflowX: 'hidden' }}>
       <SEO 
-        title="الرئيسية" 
-        description="الموقع الرسمي لجمعية بناء للتنمية بالمنيا - معًا نبني مستقبلًا أفضل للجميع"
-        canonicalUrl="https://benna-for-all.org/" 
+        title={t('nav.home')} 
+        description={t('home.hero_sub')}
+        canonicalUrl="https://benaa-for-all.org/" 
       />
 
       {/* ======= SECTION 1: HERO SECTION ======= */}
       <section className="hero-section" style={{
         position: 'relative',
-        minHeight: '95vh',
+        minHeight: '90vh',
         display: 'flex',
         alignItems: 'center',
-        background: 'linear-gradient(135deg, #091a10 0%, #102e1c 50%, #1b4d32 100%)',
         color: '#ffffff',
         overflow: 'hidden',
         padding: '6rem 0'
       }}>
-        {/* Animated 3D/Fluids Background using CSS and Framer Motion */}
-        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 1 }}>
-          {floatingBubbles.map((_, i) => (
-            <motion.div
-              key={i}
-              style={{
-                position: 'absolute',
-                width: Math.random() * 150 + 60,
-                height: Math.random() * 150 + 60,
-                borderRadius: '50%',
-                background: i % 2 === 0 
-                  ? 'radial-gradient(circle, rgba(52,210,123,0.1) 0%, rgba(27,122,62,0) 70%)'
-                  : 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(29,78,216,0) 70%)',
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                filter: 'blur(8px)',
-              }}
-              animate={{
-                y: [0, Math.random() * -100 - 50, 0],
-                x: [0, Math.random() * 60 - 30, 0],
-                scale: [1, 1.15, 1],
-                rotate: [0, 360],
-              }}
-              transition={{
-                duration: Math.random() * 20 + 15,
-                repeat: Infinity,
-                ease: 'easeInOut'
-              }}
-            />
-          ))}
-          {/* Glassmorphic large elements */}
+        {/* Background Zoom Image with Overlay */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+          overflow: 'hidden'
+        }}>
+          <motion.div
+            initial={{ scale: 1.12 }}
+            animate={{ scale: 1.0 }}
+            transition={{ duration: 12, ease: 'easeOut', repeat: Infinity, repeatType: 'reverse' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundImage: 'url("https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1920&auto=format&fit=crop")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          />
+          {/* 50% Dark Overlay */}
           <div style={{
             position: 'absolute',
-            top: '-10%',
-            left: '-5%',
-            width: '40vw',
-            height: '40vw',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(52,210,123,0.07) 0%, transparent 80%)',
-            filter: 'blur(40px)'
-          }} />
-          <div style={{
-            position: 'absolute',
-            bottom: '-10%',
-            right: '-5%',
-            width: '45vw',
-            height: '45vw',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 80%)',
-            filter: 'blur(50px)'
+            inset: 0,
+            background: 'linear-gradient(to bottom, rgba(15, 36, 25, 0.75), rgba(15, 36, 25, 0.65))',
+            zIndex: 1
           }} />
         </div>
 
@@ -211,7 +185,7 @@ export default function HomePage() {
                 marginBottom: '1.5rem',
                 letterSpacing: '0.5px'
               }}>
-                🌟 جمعية أهلية مشهرة برقم 1627 لسنة 2005
+                🌟 {t('home.hero_title') === 'Benaa For All Foundation' ? 'Registered NGO No. 1627 of 2005' : 'جمعية أهلية مشهرة برقم 1627 لسنة 2005'}
               </span>
 
               <h1 style={{
@@ -224,7 +198,7 @@ export default function HomePage() {
                 WebkitTextFillColor: 'transparent',
                 textShadow: '0 4px 20px rgba(0,0,0,0.15)'
               }}>
-                جمعية بناء للتنمية بالمنيا
+                {t('home.hero_title')}
               </h1>
 
               <h2 style={{
@@ -233,7 +207,7 @@ export default function HomePage() {
                 fontWeight: '700',
                 marginBottom: '1.5rem'
               }}>
-                معًا نبني مستقبلًا أفضل للجميع
+                {t('home.hero_highlight')}
               </h2>
 
               <p style={{
@@ -244,7 +218,7 @@ export default function HomePage() {
                 maxWidth: '720px',
                 marginInline: 'auto'
               }}>
-                نعمل على تحقيق التنمية الشاملة للفئات الأكثر احتياجًا من خلال برامج ومبادرات تنموية مستدامة ترتكز على الشفافية والمشاركة الفعالة.
+                {t('home.hero_sub')}
               </p>
 
               <div style={{
@@ -261,9 +235,9 @@ export default function HomePage() {
                   fontWeight: '700',
                   padding: '1.1rem 2.8rem'
                 }}>
-                  تعرف علينا
+                  {t('home.hero_title') === 'Benaa For All Foundation' ? 'Learn More' : 'تعرف علينا'}
                 </a>
-                <Link to="/activities" className="btn btn-outline btn-lg" style={{
+                <Link to="/projects" className="btn btn-outline btn-lg" style={{
                   borderColor: 'rgba(255, 255, 255, 0.4)',
                   color: '#ffffff',
                   fontWeight: '600',
@@ -274,8 +248,8 @@ export default function HomePage() {
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#34d27b'; e.currentTarget.style.color = '#34d27b'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'; e.currentTarget.style.color = '#ffffff'; }}>
-                  أنشطة الجمعية
-                  <FaChevronLeft style={{ marginRight: '6px', fontSize: '0.85rem' }} />
+                  {t('projects.title')}
+                  <FaChevronLeft style={{ marginRight: '6px', marginLeft: '6px', transform: t('home.hero_title') === 'Benaa For All Foundation' ? 'rotate(180deg)' : 'none', fontSize: '0.85rem' }} />
                 </Link>
               </div>
             </motion.div>
@@ -294,39 +268,9 @@ export default function HomePage() {
         }} />
       </section>
 
-      {/* ======= SECTION 2: ABOUT THE ASSOCIATION ======= */}
-      <section id="about" className="section" style={{ background: 'var(--bg)', position: 'relative' }}>
-        <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
-            <motion.div
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              style={{
-                background: 'rgba(255, 255, 255, 0.8)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(229, 231, 235, 0.6)',
-                borderRadius: 'var(--radius-lg)',
-                padding: '3rem',
-                boxShadow: 'var(--shadow-md)',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-            >
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                width: '120px',
-                height: '120px',
-                background: 'linear-gradient(135deg, rgba(52,210,123,0.05) 0%, transparent 100%)',
-                borderRadius: '0 0 0 100%'
-              }} />
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+      {/*              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
                 <span style={{ fontSize: '2.5rem' }}>🌿</span>
-                <h2 style={{ fontSize: '2rem', color: 'var(--text-dark)' }}>نبذة عن الجمعية</h2>
+                <h2 style={{ fontSize: '2rem', color: 'var(--text-dark)' }}>{t('home.about_title')}</h2>
               </div>
               <p style={{
                 fontSize: '1.2rem',
@@ -334,7 +278,7 @@ export default function HomePage() {
                 lineHeight: '2',
                 maxWidth: '900px'
               }}>
-                جمعية بناء للتنمية بالمنيا هي جمعية أهلية تنموية تسعى إلى دعم الفئات الأكثر احتياجًا وتحقيق التنمية المستدامة من خلال برامج ومشروعات تنموية متنوعة ترتكز على المعرفة والخبرة والعمل المشترك.
+                {t('home.about_desc')}
               </p>
             </motion.div>
           </div>
@@ -382,9 +326,9 @@ export default function HomePage() {
               }}>
                 <FaGlobe />
               </div>
-              <h3 style={{ fontSize: '1.5rem', color: 'var(--text-dark)' }}>رؤية الجمعية</h3>
+              <h3 style={{ fontSize: '1.5rem', color: 'var(--text-dark)' }}>{t('home.vision_title')}</h3>
               <p style={{ fontSize: '1.05rem', color: 'var(--text-body)', lineHeight: '1.8' }}>
-                تنمية شاملة تدعم الفئات المهمشة (الأكثر احتياجًا) دون تمييز وتستثمر موارد وإمكانيات المجتمع.
+                {t('home.vision_desc')}
               </p>
             </motion.div>
 
@@ -421,9 +365,9 @@ export default function HomePage() {
               }}>
                 <FaFileContract />
               </div>
-              <h3 style={{ fontSize: '1.5rem', color: 'var(--text-dark)' }}>رسالة الجمعية</h3>
+              <h3 style={{ fontSize: '1.5rem', color: 'var(--text-dark)' }}>{t('home.mission_title')}</h3>
               <p style={{ fontSize: '1.05rem', color: 'var(--text-body)', lineHeight: '1.8' }}>
-                نحن جمعية بناء للتنمية نسعى إلى تحقيق تنمية شاملة للفئات الأكثر احتياجًا ترتكز برامجها على المعرفة والخبرة والعمل المشترك، مراعين مبادئ المساواة والحماية والحفاظ على البيئة من أجل حياة كريمة وفرص عادلة للجميع.
+                {t('home.mission_desc')}
               </p>
             </motion.div>
 
@@ -435,8 +379,8 @@ export default function HomePage() {
       <section id="values" className="section" style={{ background: '#ffffff' }}>
         <div className="container">
           <div className="section-header">
-            <h2>💎 القيم الحاكمة</h2>
-            <p>يمثل الإطار القيمي لجمعية بناء للتنمية الركيزة الأساسية التي تستند إليها في صياغة رؤيتها وتوجهاتها الاستراتيجية.</p>
+            <h2>{t('home.values_title')}</h2>
+            <p>{t('home.values_subtitle')}</p>
             <div className="section-line" />
           </div>
 
@@ -482,8 +426,23 @@ export default function HomePage() {
                 }}>
                   {val.icon}
                 </div>
-                <h4 style={{ fontSize: '1.2rem', color: 'var(--text-dark)', fontWeight: '700' }}>{val.title}</h4>
-                <p style={{ fontSize: '0.92rem', color: 'var(--text-body)', lineHeight: '1.6' }}>{val.desc}</p>
+                <h4 style={{ fontSize: '1.2rem', color: 'var(--text-dark)', fontWeight: '700' }}>
+                  {i18n.language === 'en' ? 
+                    ['Justice & Equality', 'Community Peace Building', 'Respect for Human Rights', 'Teamwork', 'Credibility & Integrity', 'Respect for Diversity'][idx] : 
+                    val.title}
+                </h4>
+                <p style={{ fontSize: '0.92rem', color: 'var(--text-body)', lineHeight: '1.6' }}>
+                  {i18n.language === 'en' ? 
+                    [
+                      'Ensuring support and opportunities are provided to all target groups without discrimination.',
+                      'Promoting tolerance, respect, and social cohesion for a secure and stable community.',
+                      'Full commitment to the dignity and human rights of the individuals target by our programs.',
+                      'Belief in the power of collaboration and shared experiences to achieve sustainable impact.',
+                      'Absolute transparency, accountability, and responsibility in all our projects.',
+                      'Respecting cultural and social differences as a source of strength and enrichment.'
+                    ][idx] : 
+                    val.desc}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -494,8 +453,8 @@ export default function HomePage() {
       <section id="board" className="section" style={{ background: '#f1f8f4' }}>
         <div className="container">
           <div className="section-header">
-            <h2>👥 أعضاء مجلس الإدارة</h2>
-            <p>نخبة من الكفاءات الوطنية التي تشرف على رسم استراتيجيات وخطط الجمعية لضمان الاستمرارية والأثر.</p>
+            <h2>{t('home.board_title')}</h2>
+            <p>{t('home.board_subtitle')}</p>
             <div className="section-line" />
           </div>
 
@@ -548,7 +507,7 @@ export default function HomePage() {
                   marginBottom: '0.5rem',
                   position: 'relative'
                 }}>
-                  {member.initial}
+                  {i18n.language === 'en' ? member.name.charAt(0) : member.initial}
                   <div style={{
                     position: 'absolute',
                     bottom: '0',
@@ -567,7 +526,9 @@ export default function HomePage() {
                 </div>
 
                 <h4 style={{ fontSize: '1.15rem', color: 'var(--text-dark)', margin: 0, fontWeight: '700' }}>
-                  {member.name}
+                  {i18n.language === 'en' ? 
+                    ['Mohamed Ibrahim Dardir', 'Ashraf Osman Mohamed', 'Um Kulthum Mohamed', 'Ashraf Hamed Abdel Jalil', 'Hala Zarif Halim'][idx] : 
+                    member.name}
                 </h4>
                 
                 <span className="badge badge-green" style={{
@@ -577,7 +538,9 @@ export default function HomePage() {
                   color: '#145c2e',
                   fontWeight: '600'
                 }}>
-                  {member.role}
+                  {i18n.language === 'en' ? 
+                    ['Chairman', 'Treasurer', 'Board Member', 'Board Member', 'Board Secretary'][idx] : 
+                    member.role}
                 </span>
               </motion.div>
             ))}
@@ -594,8 +557,8 @@ export default function HomePage() {
       }}>
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="section-header">
-            <h2 style={{ color: '#ffffff' }}>📊 إحصائيات الجمعية</h2>
-            <p style={{ color: 'rgba(255, 255, 255, 0.8)' }}>أرقام وإنجازات تعكس حجم الأثر والمسؤولية في التنمية المجتمعية بالمنيا.</p>
+            <h2 style={{ color: '#ffffff' }}>{t('home.stats_title')}</h2>
+            <p style={{ color: 'rgba(255, 255, 255, 0.8)' }}>{t('home.stats_subtitle')}</p>
             <div className="section-line" style={{ background: '#34d27b' }} />
           </div>
 
@@ -632,19 +595,33 @@ export default function HomePage() {
                   lineHeight: '1.2',
                   display: 'block'
                 }}>
-                  {stat.value}
+                  {i18n.language === 'en' ? 
+                    ['8,500+', '42+', '65+', '18+'][idx] : 
+                    stat.value}
                 </span>
                 <span style={{
                   fontSize: '1rem',
                   color: 'rgba(255, 255, 255, 0.9)',
                   fontWeight: '600'
                 }}>
-                  {stat.label}
+                  {i18n.language === 'en' ? 
+                    ['Beneficiaries', 'Projects Completed', 'Initiatives launched', 'Partners & Supporters'][idx] : 
+                    stat.label}
                 </span>
               </motion.div>
             ))}
           </div>
         </div>
+      </section>
+
+      {/* ======= SECTION 8: PARTNERS & SUPPORTERS (الشركاء والداعمون) ======= */}
+      <section className="section" style={{ background: '#ffffff', overflow: 'hidden' }}>
+        <div className="container">
+          <div className="section-header">
+            <h2>{t('home.partners_title')}</h2>
+            <p>{t('home.partners_subtitle')}</p>
+            <div className="section-line" />
+          </div>
       </section>
 
       {/* ======= SECTION 8: PARTNERS & SUPPORTERS (الشركاء والداعمون) ======= */}
@@ -829,8 +806,12 @@ export default function HomePage() {
               }}
             >
               <div>
-                <h3 style={{ color: '#ffffff', fontSize: '1.6rem', marginBottom: '0.75rem' }}>معلومات الاتصال</h3>
-                <p style={{ color: 'rgba(255, 255, 255, 0.75)', fontSize: '0.95rem' }}>نحن متواجدون دائمًا لتقديم الدعم والمعلومات.</p>
+                <h3 style={{ color: '#ffffff', fontSize: '1.6rem', marginBottom: '0.75rem' }}>
+                  {i18n.language === 'en' ? 'Contact Information' : 'معلومات الاتصال'}
+                </h3>
+                <p style={{ color: 'rgba(255, 255, 255, 0.75)', fontSize: '0.95rem' }}>
+                  {i18n.language === 'en' ? 'We are always here to support and provide information.' : 'نحن متواجدون دائمًا لتقديم الدعم والمعلومات.'}
+                </p>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -850,8 +831,12 @@ export default function HomePage() {
                     <FaMapMarkerAlt />
                   </div>
                   <div>
-                    <span style={{ display: 'block', fontSize: '0.8rem', opacity: 0.6 }}>العنوان</span>
-                    <span style={{ fontSize: '0.95rem', fontWeight: '600' }}>مقر الجمعية، محافظة المنيا، جمهورية مصر العربية</span>
+                    <span style={{ display: 'block', fontSize: '0.8rem', opacity: 0.6 }}>
+                      {i18n.language === 'en' ? 'Address' : 'العنوان'}
+                    </span>
+                    <span style={{ fontSize: '0.95rem', fontWeight: '600' }}>
+                      {i18n.language === 'en' ? 'Benaa Headquarters, Minya Governorate, Egypt' : 'مقر الجمعية، محافظة المنيا، جمهورية مصر العربية'}
+                    </span>
                   </div>
                 </div>
 
@@ -871,8 +856,10 @@ export default function HomePage() {
                     <FaPhone />
                   </div>
                   <div>
-                    <span style={{ display: 'block', fontSize: '0.8rem', opacity: 0.6 }}>أرقام التواصل</span>
-                    <a href="tel:+201000000000" style={{ fontSize: '0.95rem', fontWeight: '600', color: '#ffffff' }}>01000000000+</a>
+                    <span style={{ display: 'block', fontSize: '0.8rem', opacity: 0.6 }}>
+                      {i18n.language === 'en' ? 'Phone Number' : 'أرقام التواصل'}
+                    </span>
+                    <a href="tel:+201000000000" style={{ fontSize: '0.95rem', fontWeight: '600', color: '#ffffff' }}>+20 100 000 0000</a>
                   </div>
                 </div>
 
@@ -892,8 +879,10 @@ export default function HomePage() {
                     <FaEnvelope />
                   </div>
                   <div>
-                    <span style={{ display: 'block', fontSize: '0.8rem', opacity: 0.6 }}>البريد الإلكتروني</span>
-                    <a href="mailto:info@benna.eg" style={{ fontSize: '0.95rem', fontWeight: '600', color: '#ffffff' }}>info@benna.eg</a>
+                    <span style={{ display: 'block', fontSize: '0.8rem', opacity: 0.6 }}>
+                      {i18n.language === 'en' ? 'Email Address' : 'البريد الإلكتروني'}
+                    </span>
+                    <a href="mailto:info@benaa-for-all.org" style={{ fontSize: '0.95rem', fontWeight: '600', color: '#ffffff' }}>info@benaa-for-all.org</a>
                   </div>
                 </div>
               </div>
@@ -967,15 +956,17 @@ export default function HomePage() {
                 boxShadow: 'var(--shadow-sm)'
               }}
             >
-              <h3 style={{ fontSize: '1.5rem', color: 'var(--text-dark)', marginBottom: '1.5rem', fontWeight: '700' }}>أرسل لنا رسالة</h3>
+              <h3 style={{ fontSize: '1.5rem', color: 'var(--text-dark)', marginBottom: '1.5rem', fontWeight: '700' }}>
+                {i18n.language === 'en' ? 'Send us a Message' : 'أرسل لنا رسالة'}
+              </h3>
               
               <form onSubmit={handleContactSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">الاسم الكامل</label>
+                  <label className="form-label">{i18n.language === 'en' ? 'Full Name' : 'الاسم الكامل'}</label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="الاسم الكريم"
+                    placeholder={i18n.language === 'en' ? 'Your name' : 'الاسم الكريم'}
                     value={contactForm.name}
                     onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                     required
@@ -983,7 +974,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">البريد الإلكتروني</label>
+                  <label className="form-label">{i18n.language === 'en' ? 'Email Address' : 'البريد الإلكتروني'}</label>
                   <input
                     type="email"
                     className="form-control"
@@ -995,22 +986,22 @@ export default function HomePage() {
                 </div>
 
                 <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">الموضوع</label>
+                  <label className="form-label">{i18n.language === 'en' ? 'Subject' : 'الموضوع'}</label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="موضوع الرسالة"
+                    placeholder={i18n.language === 'en' ? 'Message Subject' : 'موضوع الرسالة'}
                     value={contactForm.subject}
                     onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
                   />
                 </div>
 
                 <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">الرسالة</label>
+                  <label className="form-label">{i18n.language === 'en' ? 'Message' : 'الرسالة'}</label>
                   <textarea
                     className="form-control"
                     rows={4}
-                    placeholder="نص رسالتك..."
+                    placeholder={i18n.language === 'en' ? 'Your message content...' : 'نص رسالتك...'}
                     value={contactForm.message}
                     onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
                     required
@@ -1023,7 +1014,7 @@ export default function HomePage() {
                   disabled={submittingContact}
                   style={{ justifyContent: 'center', marginTop: '0.5rem' }}
                 >
-                  {submittingContact ? 'جاري الإرسال...' : 'إرسال الرسالة'}
+                  {submittingContact ? (i18n.language === 'en' ? 'Sending...' : 'جاري الإرسال...') : (i18n.language === 'en' ? 'Send Message' : 'إرسال الرسالة')}
                 </button>
               </form>
             </motion.div>

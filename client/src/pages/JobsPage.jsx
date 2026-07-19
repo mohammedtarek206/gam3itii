@@ -36,14 +36,14 @@ export default function JobsPage() {
   return (
     <div className="fade-in">
       <SEO 
-        title="الوظائف والتطوع" 
-        description="انضم لفريق عمل مؤسسة بناء للجميع أو تطوع معنا للمساهمة في تقديم الدعم والمساعدة للمحتاجين في مجتمعنا."
-        canonicalUrl="https://benna-for-all.org/jobs" 
+        title={t('jobs.title')} 
+        description={t('home.hero_sub')}
+        canonicalUrl="https://benaa-for-all.org/jobs" 
       />
       <div className="page-header">
         <div className="container">
           <h1>💼 {t('jobs.title')}</h1>
-          <p>انضم لفريق بناء وكن جزءاً من مسيرة الخير</p>
+          <p>{t('home.hero_highlight')}</p>
         </div>
       </div>
 

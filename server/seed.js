@@ -16,7 +16,7 @@ const seed = async () => {
   // Create admin
   const admin = await User.create({
     name: 'مدير النظام',
-    email: 'admin@benna.eg',
+    email: 'admin@benaa.eg',
     password: 'Admin@123',
     role: 'admin',
     points: 9999,
@@ -26,7 +26,7 @@ const seed = async () => {
   // Create sample user
   await User.create({
     name: 'أحمد محمد',
-    email: 'user@benna.eg',
+    email: 'user@benaa.eg',
     password: 'User@123',
     role: 'user',
     points: 250,
@@ -85,8 +85,8 @@ const seed = async () => {
   ]);
 
   console.log('✅ Database seeded successfully!');
-  console.log('📧 Admin: admin@benna.eg | 🔑 Password: Admin@123');
-  console.log('📧 User:  user@benna.eg  | 🔑 Password: User@123');
+  console.log('📧 Admin: admin@benaa.eg | 🔑 Password: Admin@123');
+  console.log('📧 User:  user@benaa.eg  | 🔑 Password: User@123');
   process.exit(0);
 };
 

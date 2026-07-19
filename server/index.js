@@ -28,8 +28,8 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'https://gameia-wine.vercel.app',
   'https://binaa-gray.vercel.app',
-  'https://bennaforall.org',
-  'https://www.bennaforall.org'
+  'https://benaaforall.org',
+  'https://www.benaaforall.org'
 ];
 
 app.use(cors({
@@ -87,7 +87,7 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.json({ success: true, message: 'Benna API Root' });
+  res.json({ success: true, message: 'Benaa For All API Root' });
 });
 
 // Temporary route to seed the admin user on Vercel
@@ -95,15 +95,15 @@ app.get('/api/seed-db', async (req, res) => {
   try {
     const User = require('./models/User');
     
-    // Seed/Reset mohammed@benna.eg
-    let mohammedAdmin = await User.findOne({ email: 'mohammed@benna.eg' });
+    // Seed/Reset mohammed@benaa.eg
+    let mohammedAdmin = await User.findOne({ email: 'mohammed@benaa.eg' });
     if (mohammedAdmin) {
       mohammedAdmin.password = 'Binaa@password';
       await mohammedAdmin.save();
     } else {
       await User.create({
         name: 'محمد طارق',
-        email: 'mohammed@benna.eg',
+        email: 'mohammed@benaa.eg',
         password: 'Binaa@password',
         role: 'admin',
         points: 1000,
@@ -111,15 +111,15 @@ app.get('/api/seed-db', async (req, res) => {
       });
     }
 
-    // Seed/Reset admin@benna.eg
-    let systemAdmin = await User.findOne({ email: 'admin@benna.eg' });
+    // Seed/Reset admin@benaa.eg
+    let systemAdmin = await User.findOne({ email: 'admin@benaa.eg' });
     if (systemAdmin) {
       systemAdmin.password = 'Admin@123';
       await systemAdmin.save();
     } else {
       await User.create({
         name: 'مدير النظام',
-        email: 'admin@benna.eg',
+        email: 'admin@benaa.eg',
         password: 'Admin@123',
         role: 'admin',
         points: 9999,
@@ -144,6 +144,9 @@ apiRouter.use('/notifications', require('./routes/notifications'));
 apiRouter.use('/admin', require('./routes/admin'));
 apiRouter.use('/stats', require('./routes/stats'));
 apiRouter.use('/activities', require('./routes/activities'));
+apiRouter.use('/projects', require('./routes/projects'));
+apiRouter.use('/volunteers', require('./routes/volunteers'));
+apiRouter.use('/assessments', require('./routes/assessments'));
 
 app.use('/api', apiRouter);
 app.use(apiRouter); // Fallback

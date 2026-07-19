@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://benna-for-all.org/sitemap.xml
+Sitemap: https://benaa-for-all.org/sitemap.xml

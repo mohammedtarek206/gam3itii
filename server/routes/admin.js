@@ -6,21 +6,29 @@ const Campaign = require('../models/Campaign');
 const Donation = require('../models/Donation');
 const Job = require('../models/Job');
 const Application = require('../models/Application');
+const Project = require('../models/Project');
+const VolunteerApplication = require('../models/VolunteerApplication');
 const { protect, admin } = require('../middleware/auth');
 
 // GET /api/admin/stats
 router.get('/stats', protect, admin, async (req, res) => {
   try {
-    const [users, cases, campaigns, donations, jobs, applications] = await Promise.all([
+    const [users, cases, campaigns, donations, jobs, applications, projects, volunteers] = await Promise.all([
       User.countDocuments({ role: 'user' }),
       Case.countDocuments(),
       Campaign.countDocuments(),
       Donation.aggregate([{ $group: { _id: null, total: { $sum: '$amount' }, count: { $sum: 1 } } }]),
       Job.countDocuments(),
       Application.countDocuments(),
+      Project.countDocuments(),
+      VolunteerApplication.countDocuments(),
     ]);
     const completedCases = await Case.countDocuments({ status: 'completed' });
     const urgentCases = await Case.countDocuments({ urgent: true });
+    const currentProjects = await Project.countDocuments({ type: 'current' });
+    const pastProjects = await Project.countDocuments({ type: 'past' });
+    const pendingVolunteers = await VolunteerApplication.countDocuments({ status: 'pending' });
+
     res.json({
       success: true,
       data: {
@@ -33,6 +41,11 @@ router.get('/stats', protect, admin, async (req, res) => {
         donationCount: donations[0]?.count || 0,
         jobs,
         applications,
+        projects,
+        currentProjects,
+        pastProjects,
+        volunteers,
+        pendingVolunteers,
       },
     });
   } catch (err) {

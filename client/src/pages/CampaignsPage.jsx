@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -7,6 +8,7 @@ import SEO from '../components/SEO';
 import { FaShareAlt, FaPlus, FaTimes } from 'react-icons/fa';
 
 export default function CampaignsPage() {
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,11 +29,11 @@ export default function CampaignsPage() {
     e.preventDefault();
     try {
       await api.post('/campaigns', form);
-      toast.success('تم إنشاء الحملة بنجاح!');
+      toast.success(i18n.language === 'en' ? 'Campaign created successfully!' : 'تم إنشاء الحملة بنجاح!');
       setShowForm(false);
       setForm({ title: '', description: '', goal: '' });
       fetchCampaigns();
-    } catch (err) { toast.error(err.message || 'حدث خطأ'); }
+    } catch (err) { toast.error(err.message || 'Error occurred'); }
   };
 
   const handleShare = async (c) => {
@@ -41,21 +43,21 @@ export default function CampaignsPage() {
       navigator.share({ title: c.title, text: c.description, url });
     } else {
       navigator.clipboard.writeText(url);
-      toast.success('تم نسخ رابط الحملة!');
+      toast.success(i18n.language === 'en' ? 'Campaign link copied!' : 'تم نسخ رابط الحملة!');
     }
   };
 
   return (
     <div className="fade-in">
       <SEO 
-        title="الحملات الخيرية" 
-        description="شارك في حملات الخير ومشاريع التنمية في مؤسسة بناء للجميع أو أنشئ حملتك الخاصة لجمع التبرعات لصالح القضايا الإنسانية."
-        canonicalUrl="https://benna-for-all.org/campaigns" 
+        title={i18n.language === 'en' ? 'Charity Campaigns' : 'الحملات الخيرية'} 
+        description={t('home.hero_sub')}
+        canonicalUrl="https://benaa-for-all.org/campaigns" 
       />
       <div className="page-header">
         <div className="container">
-          <h1>🌟 الحملات الخيرية</h1>
-          <p>شارك في حملات الخير أو أنشئ حملتك الخاصة</p>
+          <h1>🌟 {i18n.language === 'en' ? 'Charity Campaigns' : 'الحملات الخيرية'}</h1>
+          <p>{i18n.language === 'en' ? 'Join our noble campaigns or start your own to gather donations for good causes' : 'شارك في حملات الخير أو أنشئ حملتك الخاصة'}</p>
         </div>
       </div>
 
@@ -63,28 +65,36 @@ export default function CampaignsPage() {
         {user && (
           <div style={{ marginBottom: '2rem' }}>
             <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-              {showForm ? <><FaTimes /> إلغاء</> : <><FaPlus /> إنشاء حملة جديدة</>}
+              {showForm ? (
+                <><FaTimes /> {i18n.language === 'en' ? 'Cancel' : 'إلغاء'}</>
+              ) : (
+                <><FaPlus /> {i18n.language === 'en' ? 'Create New Campaign' : 'إنشاء حملة جديدة'}</>
+              )}
             </button>
           </div>
         )}
 
         {showForm && (
           <div style={{ background: '#fff', borderRadius: 'var(--radius-lg)', padding: '2rem', border: '1px solid var(--border)', marginBottom: '2rem', boxShadow: 'var(--shadow-sm)' }}>
-            <h3 style={{ marginBottom: '1.5rem' }}>📋 إنشاء حملة جديدة</h3>
+            <h3 style={{ marginBottom: '1.5rem' }}>
+              📋 {i18n.language === 'en' ? 'Create New Campaign' : 'إنشاء حملة جديدة'}
+            </h3>
             <form onSubmit={handleCreate}>
               <div className="form-group">
-                <label className="form-label">عنوان الحملة *</label>
+                <label className="form-label">{i18n.language === 'en' ? 'Campaign Title *' : 'عنوان الحملة *'}</label>
                 <input className="form-control" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
               </div>
               <div className="form-group">
-                <label className="form-label">وصف الحملة *</label>
+                <label className="form-label">{i18n.language === 'en' ? 'Campaign Description *' : 'وصف الحملة *'}</label>
                 <textarea className="form-control" rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required />
               </div>
               <div className="form-group">
-                <label className="form-label">الهدف المالي (جنيه) *</label>
+                <label className="form-label">{i18n.language === 'en' ? 'Financial Goal *' : 'الهدف المالي (جنيه) *'}</label>
                 <input className="form-control" type="number" value={form.goal} onChange={(e) => setForm({ ...form, goal: e.target.value })} required />
               </div>
-              <button className="btn btn-primary" type="submit">🚀 إطلاق الحملة</button>
+              <button className="btn btn-primary" type="submit">
+                🚀 {i18n.language === 'en' ? 'Launch Campaign' : 'إطلاق الحملة'}
+              </button>
             </form>
           </div>
         )}
@@ -98,7 +108,9 @@ export default function CampaignsPage() {
                   <div style={{ padding: '1.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.75rem' }}>
                       <span style={{ fontSize: '1.5rem' }}>🌙</span>
-                      <span className="badge badge-green">{c.status === 'active' ? 'نشطة' : 'مكتملة'}</span>
+                      <span className="badge badge-green">
+                        {c.status === 'active' ? (i18n.language === 'en' ? 'Active' : 'نشطة') : (i18n.language === 'en' ? 'Completed' : 'مكتملة')}
+                      </span>
                     </div>
                     <h3 style={{ marginBottom: '0.5rem' }}>{c.title}</h3>
                     <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', marginBottom: '1rem', lineHeight: 1.6 }}>{c.description}</p>
@@ -106,15 +118,19 @@ export default function CampaignsPage() {
                     <div className="case-progress">
                       <div className="case-progress-info">
                         <span className="percent">{percent}%</span>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{c.raised?.toLocaleString('ar-EG')} من {c.goal?.toLocaleString('ar-EG')} جنيه</span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                          {i18n.language === 'en' ? `${c.raised?.toLocaleString('en-US')} of ${c.goal?.toLocaleString('en-US')} EGP` : `${c.raised?.toLocaleString('ar-EG')} من ${c.goal?.toLocaleString('ar-EG')} جنيه`}
+                        </span>
                       </div>
                       <div className="progress-wrap"><div className="progress-bar" style={{ width: `${percent}%` }} /></div>
                     </div>
 
                     <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-                      <Link to={`/campaigns/${c._id}`} className="btn btn-outline btn-sm" style={{ flex: 1, justifyContent: 'center' }}>عرض</Link>
+                      <Link to={`/campaigns/${c._id}`} className="btn btn-outline btn-sm" style={{ flex: 1, justifyContent: 'center' }}>
+                        {i18n.language === 'en' ? 'View' : 'عرض'}
+                      </Link>
                       <button className="btn btn-ghost btn-sm" onClick={() => handleShare(c)}>
-                        <FaShareAlt /> مشاركة
+                        <FaShareAlt /> {i18n.language === 'en' ? 'Share' : 'مشاركة'}
                       </button>
                     </div>
                   </div>

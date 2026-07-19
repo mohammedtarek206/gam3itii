@@ -60,6 +60,7 @@ export default function Navbar() {
 
   const links = [
     { to: '/', label: 'الرئيسية' },
+    { to: '/projects', label: 'مشروعات الجمعية' },
     { to: '/activities', label: 'الأنشطة والفعاليات' },
     { to: '/jobs', label: 'الوظائف' },
     { to: '/contact', label: 'تواصل معنا' },
@@ -70,7 +71,7 @@ export default function Navbar() {
       <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
         <div className="navbar-inner">
           <Link to="/" className="navbar-logo">
-            🌿 {t('nav.brand')}
+            🌿 Benaa For All
           </Link>
 
           <div className="navbar-links">
