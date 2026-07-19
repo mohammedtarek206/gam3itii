@@ -622,16 +622,6 @@ export default function HomePage() {
             <p>{t('home.partners_subtitle')}</p>
             <div className="section-line" />
           </div>
-      </section>
-
-      {/* ======= SECTION 8: PARTNERS & SUPPORTERS (الشركاء والداعمون) ======= */}
-      <section className="section" style={{ background: '#ffffff', overflow: 'hidden' }}>
-        <div className="container">
-          <div className="section-header">
-            <h2>🤝 الشركاء والداعمون</h2>
-            <p>شركاء النجاح الذين نعتز بالتعاون معهم لتحقيق أهداف التنمية المستدامة.</p>
-            <div className="section-line" />
-          </div>
         </div>
 
         {/* Marquee/Slider Slider layout using CSS/Framer motion */}
