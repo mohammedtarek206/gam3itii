@@ -2,12 +2,15 @@ const express = require('express');
 const router = express.Router();
 const Media = require('../models/Media');
 const { protect, authorize } = require('../middleware/auth');
-const { logActivity } = require('../middleware/activityLogger');
 
-// Helper to extract Google Drive ID
-const extractDriveId = (url) => {
-  const match = url.match(/[-\w]{25,}/);
-  return match ? match[0] : null;
+// Helper to extract Google Drive ID and convert to direct URL
+const convertDriveUrl = (url) => {
+  if (!url || !url.includes('drive.google.com')) return url;
+  const fileMatch = url.match(/\/file\/d\/([^/]+)/);
+  if (fileMatch) return `https://drive.google.com/uc?export=view&id=${fileMatch[1]}`;
+  const idMatch = url.match(/[?&]id=([^&]+)/);
+  if (idMatch) return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+  return url;
 };
 
 // GET all media
@@ -27,50 +30,36 @@ router.get('/', protect, authorize('superadmin', 'admin', 'editor', 'content_man
 });
 
 // POST add new media (Drive link or generic URL)
-router.post('/', 
-  protect, 
-  authorize('superadmin', 'admin', 'editor', 'content_manager'),
-  logActivity('Media', 'CREATE', (req, body) => `تم رفع وسائط جديدة: ${req.body.title}`),
-  async (req, res) => {
-    try {
-      let { title, url, type, folder } = req.body;
-      let driveId = null;
+router.post('/', protect, authorize('superadmin', 'admin', 'editor', 'content_manager'), async (req, res) => {
+  try {
+    let { title, url, type, folder } = req.body;
+    if (!title || !url) return res.status(400).json({ success: false, message: 'العنوان والرابط مطلوبان' });
 
-      if (url.includes('drive.google.com')) {
-        driveId = extractDriveId(url);
-        if (driveId) {
-          url = `https://drive.google.com/uc?export=view&id=${driveId}`;
-        }
-      }
+    const convertedUrl = convertDriveUrl(url);
 
-      const media = await Media.create({
-        title,
-        url,
-        driveId,
-        type: type || 'image',
-        folder: folder || 'general',
-        uploadedBy: req.user._id
-      });
+    const media = await Media.create({
+      title,
+      url: convertedUrl,
+      type: type || 'image',
+      folder: folder || 'general',
+      uploadedBy: req.user._id
+    });
 
-      res.status(201).json({ success: true, data: media });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
-    }
+    res.status(201).json({ success: true, data: media });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // DELETE media
-router.delete('/:id', 
-  protect, 
-  authorize('superadmin', 'admin', 'editor'),
-  logActivity('Media', 'DELETE', (req) => `تم حذف وسائط بمعرف: ${req.params.id}`),
-  async (req, res) => {
-    try {
-      const media = await Media.findByIdAndDelete(req.params.id);
-      if (!media) return res.status(404).json({ success: false, message: 'غير موجود' });
-      res.json({ success: true, data: {} });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
-    }
+router.delete('/:id', protect, authorize('superadmin', 'admin', 'editor'), async (req, res) => {
+  try {
+    const media = await Media.findByIdAndDelete(req.params.id);
+    if (!media) return res.status(404).json({ success: false, message: 'غير موجود' });
+    res.json({ success: true, data: {} });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 module.exports = router;

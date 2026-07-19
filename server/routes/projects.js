@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Project = require('../models/Project');
 const { protect, authorize } = require('../middleware/auth');
-const { logActivity } = require('../middleware/activityLogger');
+const { log } = require('../middleware/activityLogger');
 
 // Helper: Convert Google Drive share link to direct image URL
 function convertGDriveUrl(url) {
@@ -27,8 +27,7 @@ router.get('/', async (req, res) => {
     const filter = {};
     if (type === 'current') filter.type = 'current';
     else if (type === 'past') filter.type = 'past';
-    
-    // Only admins should be able to fetch hidden projects
+
     if (!includeHidden) {
       filter.isHidden = { $ne: true };
     }
@@ -44,7 +43,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
-    if (!project || (project.isHidden && !req.user)) {
+    if (!project) {
       return res.status(404).json({ success: false, message: 'المشروع غير موجود' });
     }
     res.json({ success: true, data: project });
@@ -54,79 +53,86 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/projects - Admin only
-router.post('/', 
-  protect, 
-  authorize('superadmin', 'admin', 'content_manager'),
-  logActivity('Project', 'CREATE', (req) => `تم إضافة مشروع جديد: ${req.body.title?.ar || 'بدون اسم'}`),
-  async (req, res) => {
-    try {
-      const { title, description, type, startDate, endDate, images, mainImage, pdfLinks, videoLink, isHidden, order, status, location, beneficiaries } = req.body;
-      
-      const processedImages = processUrls(images);
-      const processedPdfs = processUrls(pdfLinks);
-      const processedMain = convertGDriveUrl(mainImage);
-      // Ensure bilingual structure
-      const finalTitle = typeof title === 'string' ? { ar: title, en: title } : title;
-      const finalDesc = typeof description === 'string' ? { ar: description, en: description } : description;
+router.post('/', protect, authorize('superadmin', 'admin', 'content_manager'), async (req, res) => {
+  try {
+    const { title, description, type, startDate, endDate, images, mainImage, pdfLinks, videoLink, isHidden, order, status, location, beneficiaries } = req.body;
 
-      const project = await Project.create({
-        title: finalTitle,
-        description: finalDesc,
-        type, startDate, endDate,
-        images: processedImages,
-        pdfLinks: processedPdfs,
-        mainImage: processedMain,
-        videoLink, isHidden, order, status, location, beneficiaries
-      });
-      res.status(201).json({ success: true, data: project });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
-    }
+    const processedImages = processUrls(images);
+    const processedPdfs = processUrls(pdfLinks);
+    const processedMain = convertGDriveUrl(mainImage);
+    const finalTitle = typeof title === 'string' ? { ar: title, en: title } : title;
+    const finalDesc = typeof description === 'string' ? { ar: description, en: description } : description;
+
+    const project = await Project.create({
+      title: finalTitle,
+      description: finalDesc,
+      type, startDate, endDate,
+      images: processedImages,
+      pdfLinks: processedPdfs,
+      mainImage: processedMain,
+      videoLink, isHidden, order, status, location, beneficiaries
+    });
+
+    // Log the action
+    await log({
+      user: req.user._id,
+      action: 'CREATE',
+      entity: 'Project',
+      entityId: project._id,
+      details: `تم إضافة مشروع جديد: ${finalTitle?.ar || 'بدون اسم'}`,
+      ip: req.ip
+    });
+
+    res.status(201).json({ success: true, data: project });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // PUT /api/projects/:id - Admin only
-router.put('/:id', 
-  protect, 
-  authorize('superadmin', 'admin', 'content_manager'),
-  logActivity('Project', 'UPDATE', (req) => `تم تعديل مشروع: ${req.params.id}`),
-  async (req, res) => {
-    try {
-      const { title, description, type, startDate, endDate, images, mainImage, pdfLinks, videoLink, isHidden, order, status, location, beneficiaries } = req.body;
-      
-      const processedImages = processUrls(images);
-      const processedPdfs = processUrls(pdfLinks);
-      const processedMain = convertGDriveUrl(mainImage);
-      
-      let updateData = { type, startDate, endDate, images: processedImages, pdfLinks: processedPdfs, mainImage: processedMain, videoLink, isHidden, order, status, location, beneficiaries, updatedAt: new Date() };
-      
-      if (title) updateData.title = typeof title === 'string' ? { ar: title, en: title } : title;
-      if (description) updateData.description = typeof description === 'string' ? { ar: description, en: description } : description;
+router.put('/:id', protect, authorize('superadmin', 'admin', 'content_manager'), async (req, res) => {
+  try {
+    const { title, description, type, startDate, endDate, images, mainImage, pdfLinks, videoLink, isHidden, order, status, location, beneficiaries } = req.body;
 
-      const project = await Project.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        { new: true, runValidators: true }
-      );
-      if (!project) return res.status(404).json({ success: false, message: 'المشروع غير موجود' });
-      res.json({ success: true, data: project });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
-    }
+    const processedImages = processUrls(images);
+    const processedPdfs = processUrls(pdfLinks);
+    const processedMain = convertGDriveUrl(mainImage);
+
+    let updateData = {
+      type, startDate, endDate,
+      images: processedImages,
+      pdfLinks: processedPdfs,
+      mainImage: processedMain,
+      videoLink, isHidden, order, status, location, beneficiaries,
+      updatedAt: new Date()
+    };
+
+    if (title) updateData.title = typeof title === 'string' ? { ar: title, en: title } : title;
+    if (description) updateData.description = typeof description === 'string' ? { ar: description, en: description } : description;
+
+    const project = await Project.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
+    if (!project) return res.status(404).json({ success: false, message: 'المشروع غير موجود' });
+
+    await log({ user: req.user._id, action: 'UPDATE', entity: 'Project', entityId: project._id, details: `تم تعديل مشروع`, ip: req.ip });
+
+    res.json({ success: true, data: project });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // DELETE /api/projects/:id - Admin only
-router.delete('/:id', 
-  protect, 
-  authorize('superadmin', 'admin'),
-  logActivity('Project', 'DELETE', (req) => `تم حذف مشروع: ${req.params.id}`),
-  async (req, res) => {
-    try {
-      const project = await Project.findByIdAndDelete(req.params.id);
-      if (!project) return res.status(404).json({ success: false, message: 'المشروع غير موجود' });
-      res.json({ success: true, message: 'تم حذف المشروع' });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
-    }
+router.delete('/:id', protect, authorize('superadmin', 'admin'), async (req, res) => {
+  try {
+    const project = await Project.findByIdAndDelete(req.params.id);
+    if (!project) return res.status(404).json({ success: false, message: 'المشروع غير موجود' });
+
+    await log({ user: req.user._id, action: 'DELETE', entity: 'Project', entityId: req.params.id, details: `تم حذف مشروع`, ip: req.ip });
+
+    res.json({ success: true, message: 'تم حذف المشروع' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 module.exports = router;

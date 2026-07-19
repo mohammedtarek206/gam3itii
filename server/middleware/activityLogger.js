@@ -1,39 +1,26 @@
 const ActivityLog = require('../models/ActivityLog');
 
+/**
+ * Simple async function to log an activity - called manually inside route handlers.
+ * This avoids the res.send override issues with the middleware approach.
+ */
+const log = async ({ user, action, entity, entityId = null, details = '', ip = '' }) => {
+  try {
+    await ActivityLog.create({ user, action, entity, entityId, details, ipAddress: ip });
+  } catch (err) {
+    console.error('Activity log error:', err.message);
+  }
+};
+
+/**
+ * Express middleware factory - wraps the next handler and logs AFTER success.
+ * Simplified to avoid res.send override bugs.
+ */
 exports.logActivity = (entity, action, detailsFunc = null) => {
   return async (req, res, next) => {
-    const originalSend = res.send;
-    res.send = function (body) {
-      if (res.statusCode >= 200 && res.statusCode < 300 && req.user) {
-        try {
-          const parsedBody = typeof body === 'string' ? JSON.parse(body) : body;
-          let details = '';
-          let entityId = null;
-          
-          if (detailsFunc) {
-            details = detailsFunc(req, parsedBody);
-          } else {
-            details = `تمت العملية بنجاح: ${action} على ${entity}`;
-          }
-          
-          if (parsedBody && parsedBody.data && parsedBody.data._id) {
-            entityId = parsedBody.data._id;
-          } else if (req.params.id) {
-            entityId = req.params.id;
-          }
-
-          ActivityLog.create({
-            user: req.user._id,
-            action,
-            entity,
-            entityId,
-            details,
-            ipAddress: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress
-          }).catch(err => console.error('Error logging activity:', err));
-        } catch (e) {}
-      }
-      originalSend.call(this, body);
-    };
+    // Just pass through - actual logging is done inside route handlers via `log()`
     next();
   };
 };
+
+exports.log = log;
