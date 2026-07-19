@@ -7,11 +7,12 @@ import {
   FaTachometerAlt, FaUsers, FaHandHoldingHeart, FaBullhorn,
   FaBriefcase, FaFileAlt, FaMoneyBillWave, FaSignOutAlt,
   FaPlus, FaEdit, FaTrash, FaCheckCircle, FaTimesCircle, FaDownload, FaEye,
-  FaRunning, FaCalendarAlt,
+  FaRunning, FaCalendarAlt, FaProjectDiagram
 } from 'react-icons/fa';
 
 const NAV_ITEMS = [
   { key: 'stats', label: 'الإحصائيات', icon: <FaTachometerAlt /> },
+  { key: 'projects', label: 'المشروعات', icon: <FaProjectDiagram /> },
   { key: 'cases', label: 'الحالات', icon: <FaHandHoldingHeart /> },
   { key: 'campaigns', label: 'الحملات', icon: <FaBullhorn /> },
   { key: 'activities', label: 'الأنشطة', icon: <FaRunning /> },
@@ -43,9 +44,12 @@ export default function AdminDashboard() {
   const [jobForm, setJobForm] = useState({ title: '', description: '', location: '', type: 'fulltime', requirements: '', tasks: '', salary: '' });
   const [activityForm, setActivityForm] = useState({ title: '', description: '', category: 'volunteer', location: '', date: '', endDate: '', maxParticipants: '', status: 'upcoming' });
   const [activities, setActivities] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [showProjectForm, setShowProjectForm] = useState(false);
+  const [projectForm, setProjectForm] = useState({ titleAr: '', titleEn: '', descAr: '', descEn: '', type: 'current', status: 'active', isHidden: false, order: 0, mainImage: '', images: '', pdfLinks: '', videoLink: '' });
 
   useEffect(() => {
-    if (!user || user.role !== 'admin') { navigate('/'); return; }
+    if (!user || (user.role !== 'admin' && user.role !== 'superadmin')) { navigate('/'); return; }
     fetchData(tab);
   }, [user, tab]);
 
@@ -53,6 +57,7 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       if (currentTab === 'stats') { const { data } = await api.get('/admin/stats'); setStats(data.data); }
+      else if (currentTab === 'projects') { const { data } = await api.get('/projects?includeHidden=true'); setProjects(data.data || []); }
       else if (currentTab === 'cases') { const { data } = await api.get('/cases'); setCases(data.data || []); }
       else if (currentTab === 'campaigns') { const { data } = await api.get('/campaigns'); setCampaigns(data.data || []); }
       else if (currentTab === 'jobs') { const { data } = await api.get('/jobs'); setJobs(data.data || []); }
@@ -61,6 +66,33 @@ export default function AdminDashboard() {
       else if (currentTab === 'users') { const { data } = await api.get('/admin/users'); setUsers(data.data || []); }
       else if (currentTab === 'activities') { const { data } = await api.get('/activities'); setActivities(data.data || []); }
     } finally { setLoading(false); }
+  };
+
+  // Project actions
+  const handleAddProject = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        title: { ar: projectForm.titleAr, en: projectForm.titleEn },
+        description: { ar: projectForm.descAr, en: projectForm.descEn },
+        type: projectForm.type, status: projectForm.status, isHidden: projectForm.isHidden, order: Number(projectForm.order),
+        mainImage: projectForm.mainImage,
+        images: projectForm.images.split('\n').filter(Boolean),
+        pdfLinks: projectForm.pdfLinks.split('\n').filter(Boolean),
+        videoLink: projectForm.videoLink
+      };
+      if (editItem) { await api.put(`/projects/${editItem._id}`, payload); toast.success('تم التعديل بنجاح'); } 
+      else { await api.post('/projects', payload); toast.success('تمت الإضافة بنجاح'); }
+      setShowProjectForm(false); setEditItem(null);
+      setProjectForm({ titleAr: '', titleEn: '', descAr: '', descEn: '', type: 'current', status: 'active', isHidden: false, order: 0, mainImage: '', images: '', pdfLinks: '', videoLink: '' });
+      fetchData('projects');
+    } catch (err) { toast.error(err.response?.data?.message || err.message); }
+  };
+
+  const handleDeleteProject = async (id) => {
+    if (!window.confirm('هل أنت متأكد من حذف هذا المشروع؟')) return;
+    try { await api.delete(`/projects/${id}`); toast.success('تم الحذف'); fetchData('projects'); }
+    catch (err) { toast.error(err.message); }
   };
 
   // Case actions
@@ -209,6 +241,89 @@ export default function AdminDashboard() {
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {/* ===== PROJECTS ===== */}
+        {tab === 'projects' && (
+          <div className="fade-in">
+            <div className="admin-header">
+              <h1>💼 إدارة المشروعات</h1>
+              <button className="btn btn-primary btn-sm" onClick={() => { setShowProjectForm(!showProjectForm); setEditItem(null); setProjectForm({ titleAr: '', titleEn: '', descAr: '', descEn: '', type: 'current', status: 'active', isHidden: false, order: 0, mainImage: '', images: '', pdfLinks: '', videoLink: '' }); }}>
+                <FaPlus /> إضافة مشروع
+              </button>
+            </div>
+
+            {showProjectForm && (
+              <div style={{ background: '#fff', borderRadius: 'var(--radius-lg)', padding: '1.75rem', marginBottom: '1.5rem', border: '1px solid var(--border)' }}>
+                <h3 style={{ marginBottom: '1.25rem' }}>{editItem ? 'تعديل المشروع' : 'إضافة مشروع جديد'}</h3>
+                <form onSubmit={handleAddProject}>
+                  <div className="grid-2">
+                    <div className="form-group"><label className="form-label">العنوان (عربي) *</label><input className="form-control" value={projectForm.titleAr} onChange={e => setProjectForm({...projectForm, titleAr: e.target.value})} required /></div>
+                    <div className="form-group"><label className="form-label">العنوان (English) *</label><input className="form-control" value={projectForm.titleEn} onChange={e => setProjectForm({...projectForm, titleEn: e.target.value})} required dir="ltr" /></div>
+                  </div>
+                  <div className="grid-2">
+                    <div className="form-group"><label className="form-label">النوع</label>
+                      <select className="form-control" value={projectForm.type} onChange={e => setProjectForm({...projectForm, type: e.target.value})}>
+                        <option value="current">حالي</option><option value="past">سابق</option>
+                      </select>
+                    </div>
+                    <div className="form-group"><label className="form-label">الحالة</label>
+                      <select className="form-control" value={projectForm.status} onChange={e => setProjectForm({...projectForm, status: e.target.value})}>
+                        <option value="active">نشط</option><option value="completed">مكتمل</option><option value="planning">قيد التخطيط</option><option value="suspended">موقوف</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid-2">
+                    <div className="form-group"><label className="form-label">الوصف (عربي) *</label><textarea className="form-control" rows={3} value={projectForm.descAr} onChange={e => setProjectForm({...projectForm, descAr: e.target.value})} required /></div>
+                    <div className="form-group"><label className="form-label">الوصف (English) *</label><textarea className="form-control" rows={3} value={projectForm.descEn} onChange={e => setProjectForm({...projectForm, descEn: e.target.value})} required dir="ltr" /></div>
+                  </div>
+                  <div className="form-group"><label className="form-label">الصورة الرئيسية (رابط Drive أو رابط مباشر)</label><input className="form-control" value={projectForm.mainImage} onChange={e => setProjectForm({...projectForm, mainImage: e.target.value})} dir="ltr" /></div>
+                  <div className="form-group"><label className="form-label">معرض الصور (رابط في كل سطر)</label><textarea className="form-control" rows={3} value={projectForm.images} onChange={e => setProjectForm({...projectForm, images: e.target.value})} dir="ltr" /></div>
+                  <div className="grid-2">
+                    <div className="form-group"><label className="form-label">الترتيب (Order)</label><input className="form-control" type="number" value={projectForm.order} onChange={e => setProjectForm({...projectForm, order: e.target.value})} /></div>
+                    <div className="form-group" style={{ display: 'flex', alignItems: 'center', paddingTop: '1.5rem' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 'bold' }}>
+                        <input type="checkbox" checked={projectForm.isHidden} onChange={e => setProjectForm({...projectForm, isHidden: e.target.checked})} /> 👁️ إخفاء المشروع
+                      </label>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
+                    <button className="btn btn-primary" type="submit">{editItem ? 'حفظ التعديلات' : 'إضافة المشروع'}</button>
+                    <button className="btn btn-ghost" type="button" onClick={() => setShowProjectForm(false)}>إلغاء</button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            <div className="table-responsive">
+              <table className="admin-table">
+                <thead><tr><th>الصورة</th><th>المشروع</th><th>النوع</th><th>الحالة</th><th>الترتيب</th><th>الرؤية</th><th>إجراءات</th></tr></thead>
+                <tbody>
+                  {projects.map(p => (
+                    <tr key={p._id}>
+                      <td>{p.mainImage ? <img src={p.mainImage} alt="img" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} /> : 'لا توجد'}</td>
+                      <td style={{ fontWeight: 600 }}>{p.title?.ar || p.title}</td>
+                      <td>{p.type === 'current' ? 'حالي' : 'سابق'}</td>
+                      <td><span className={`badge ${p.status === 'active' ? 'badge-green' : 'badge-gray'}`}>{p.status}</span></td>
+                      <td>{p.order || 0}</td>
+                      <td>{p.isHidden ? <span style={{ color: 'red' }}><FaTimesCircle style={{ verticalAlign: 'middle', marginRight: '4px' }} /> مخفي</span> : <span style={{ color: 'green' }}><FaCheckCircle style={{ verticalAlign: 'middle', marginRight: '4px' }} /> مرئي</span>}</td>
+                      <td>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button className="btn-icon" onClick={() => { 
+                            setEditItem(p); 
+                            setProjectForm({ titleAr: p.title?.ar || p.title || '', titleEn: p.title?.en || '', descAr: p.description?.ar || p.description || '', descEn: p.description?.en || '', type: p.type || 'current', status: p.status || 'active', isHidden: !!p.isHidden, order: p.order || 0, mainImage: p.mainImage || '', images: p.images?.join('\n') || '', pdfLinks: p.pdfLinks?.join('\n') || '', videoLink: p.videoLink || '' }); 
+                            setShowProjectForm(true); 
+                          }} title="تعديل"><FaEdit /></button>
+                          <button className="btn-icon text-danger" onClick={() => handleDeleteProject(p._id)} title="حذف"><FaTrash /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {projects.length === 0 && <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>لا توجد مشروعات</td></tr>}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 

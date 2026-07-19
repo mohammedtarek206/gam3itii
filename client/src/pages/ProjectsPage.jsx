@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api/axios';
 import SEO from '../components/SEO';
@@ -16,8 +17,15 @@ const STATUS_LABELS = {
 };
 
 function ProjectCard({ project, onVolunteer, onViewDetails }) {
+  const { i18n } = useTranslation();
   const [imgError, setImgError] = useState(false);
   const status = STATUS_LABELS[project.status] || STATUS_LABELS.active;
+
+  const getLocalized = (field) => {
+    if (!field) return '';
+    if (typeof field === 'string') return field;
+    return i18n.language === 'en' && field.en ? field.en : field.ar;
+  };
 
   return (
     <motion.div
@@ -68,11 +76,11 @@ function ProjectCard({ project, onVolunteer, onViewDetails }) {
       {/* Content */}
       <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.85rem', flexGrow: 1 }}>
         <h3 style={{ fontSize: '1.15rem', color: 'var(--text-dark)', fontWeight: 700, lineHeight: 1.4, margin: 0 }}>
-          {project.title}
+          {getLocalized(project.title)}
         </h3>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-body)', lineHeight: 1.7, margin: 0,
           display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {project.description}
+          {getLocalized(project.description)}
         </p>
 
         {/* Meta info */}
@@ -122,8 +130,15 @@ function ProjectCard({ project, onVolunteer, onViewDetails }) {
 }
 
 function ProjectDetailModal({ project, onClose, onVolunteer }) {
+  const { i18n } = useTranslation();
   const [imgError, setImgError] = useState(false);
   if (!project) return null;
+
+  const getLocalized = (field) => {
+    if (!field) return '';
+    if (typeof field === 'string') return field;
+    return i18n.language === 'en' && field.en ? field.en : field.ar;
+  };
 
   return (
     <AnimatePresence>
@@ -163,7 +178,7 @@ function ProjectDetailModal({ project, onClose, onVolunteer }) {
               ✕
             </button>
             <div style={{ position: 'absolute', bottom: '1rem', right: '1.5rem' }}>
-              <h2 style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 800, margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>{project.title}</h2>
+              <h2 style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 800, margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>{getLocalized(project.title)}</h2>
             </div>
           </div>
 
@@ -179,7 +194,7 @@ function ProjectDetailModal({ project, onClose, onVolunteer }) {
             </div>
 
             <p style={{ fontSize: '1rem', color: 'var(--text-body)', lineHeight: 1.8, marginBottom: '1.5rem' }}>
-              {project.description}
+              {getLocalized(project.description)}
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
