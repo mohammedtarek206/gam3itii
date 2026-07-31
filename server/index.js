@@ -15,14 +15,14 @@ app.use(helmet());
 if (process.env.NODE_ENV !== 'production' || !process.env.MONGODB_URI) {
   const envPath = path.join(__dirname, '.env.local');
   const envExists = fs.existsSync(envPath);
-  
+
   require('dotenv').config({
     path: envExists ? envPath : path.join(__dirname, '.env')
   });
 }
 
 app.use(cors({
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
     // Allow all origins dynamically to prevent CORS errors across deployments
     callback(null, origin || true);
   },
@@ -42,6 +42,23 @@ const connectDB = async () => {
     }
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('✅ MongoDB Connected');
+
+    // Seed Super Admin if none exists
+    const User = require('./models/User');
+    const b = require('bcryptjs');
+    const adminEmail = 'super@benaa.com';
+    let adminUser = await User.findOne({ email: adminEmail });
+    if (!adminUser) {
+      const salt = await b.genSalt(10);
+      const hash = await b.hash('super123456', salt);
+      await User.create({ name: 'Super Admin', email: adminEmail, password: hash, role: 'superadmin', isActive: true });
+      console.log(`✅ Super Admin created -> Email: ${adminEmail} | Password: super123456`);
+    } else {
+      adminUser.role = 'superadmin';
+      await adminUser.save();
+      console.log(`✅ Super Admin ready -> Email: ${adminEmail}`);
+    }
+
   } catch (err) {
     console.error('❌ MongoDB Connection Error:', err.message);
   }
@@ -57,9 +74,9 @@ app.get('/api/health', async (req, res) => {
   } catch (err) {
     connectionError = err.message;
   }
-  
-  res.json({ 
-    success: true, 
+
+  res.json({
+    success: true,
     message: 'API is alive!',
     env: process.env.NODE_ENV,
     mongoURI_Exists: !!process.env.MONGODB_URI,
@@ -76,7 +93,7 @@ app.get('/', (req, res) => {
 app.get('/api/seed-db', async (req, res) => {
   try {
     const User = require('./models/User');
-    
+
     // Seed/Reset mohammed@benaa.eg
     let mohammedAdmin = await User.findOne({ email: 'mohammed@benaa.eg' });
     if (mohammedAdmin) {
@@ -108,7 +125,7 @@ app.get('/api/seed-db', async (req, res) => {
         badges: ['سفير الخير', 'فاعل خير']
       });
     }
-    
+
     res.json({ success: true, message: '✅ تم تهيئة حسابات المسؤولين (Admins) بنجاح على قاعدة البيانات!' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -139,13 +156,13 @@ app.use(apiRouter); // Fallback
 app.use((err, req, res, next) => {
   console.error('❌ Server Error:', err.message);
   if (err.stack) console.error(err.stack);
-  
+
   const response = {
     success: false,
     message: err.message || 'خطأ في الخادم',
     debug: process.env.NODE_ENV === 'development' ? err.stack : undefined
   };
-  
+
   res.status(500).json(response);
 });
 

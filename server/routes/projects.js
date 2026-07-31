@@ -3,21 +3,29 @@ const router = express.Router();
 const Project = require('../models/Project');
 const { protect, admin } = require('../middleware/auth');
 
-// Helper: Convert any Google Drive share link to direct view URL
+// Helper: Convert any Google Drive share link to direct view URL (using lh3.googleusercontent.com to bypass limits)
 function convertGDriveUrl(url) {
   if (!url || typeof url !== 'string') return '';
   url = url.trim();
   if (!url) return '';
-  
-  // Format: https://drive.google.com/file/d/FILE_ID/view
+
+  // Handle already converted Google Photos format
+  if (url.startsWith('https://lh3.googleusercontent.com/d/')) return url;
+
+  // Extract FILE_ID
+  let fileId = null;
   const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if (fileMatch) return `https://drive.google.com/uc?export=view&id=${fileMatch[1]}`;
-  
-  // Format: https://drive.google.com/open?id=FILE_ID
   const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (idMatch) return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
-  
-  // Already a direct URL or other link — return as-is
+
+  if (fileMatch) fileId = fileMatch[1];
+  else if (idMatch) fileId = idMatch[1];
+
+  if (fileId) {
+    // Return lh3 format which avoids GDrive strict limitations
+    return `https://lh3.googleusercontent.com/d/${fileId}`;
+  }
+
+  // If not a GDrive link at all, return original string (might be relative path or imgur etc.)
   return url;
 }
 

@@ -8,7 +8,7 @@ const Job = require('../models/Job');
 const Application = require('../models/Application');
 const Project = require('../models/Project');
 const VolunteerApplication = require('../models/VolunteerApplication');
-const { protect, admin } = require('../middleware/auth');
+const { protect, admin, authorize } = require('../middleware/auth');
 
 // GET /api/admin/stats
 router.get('/stats', protect, admin, async (req, res) => {
@@ -63,21 +63,88 @@ router.get('/users', protect, admin, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/users/:id
-router.delete('/users/:id', protect, admin, async (req, res) => {
+// POST /api/admin/users
+router.post('/users', protect, authorize('superadmin'), async (req, res) => {
   try {
-    await User.findByIdAndDelete(req.params.id);
-    res.json({ success: true, message: 'تم حذف المستخدم' });
+    const { name, email, password, phone, role, avatar } = req.body;
+    let user = await User.findOne({ email });
+    if (user) return res.status(400).json({ success: false, message: 'البريد الإلكتروني مسجل بالفعل' });
+
+    user = await User.create({
+      name, email, password, phone, role, avatar, isActive: true
+    });
+    const { password: pass, ...userData } = user._doc;
+    res.status(201).json({ success: true, data: userData });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// PUT /api/admin/users/:id/role
-router.put('/users/:id/role', protect, admin, async (req, res) => {
+// PUT /api/admin/users/:id
+router.put('/users/:id', protect, authorize('superadmin'), async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, { role: req.body.role }, { new: true }).select('-password');
-    res.json({ success: true, data: user });
+    const { name, email, phone, role, avatar, isActive } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'المستخدم غير موجود' });
+
+    // update fields
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone !== undefined) user.phone = phone;
+    if (role) user.role = role;
+    if (avatar) user.avatar = avatar;
+    if (isActive !== undefined) user.isActive = isActive;
+
+    await user.save(); // using save to hit pre-save hooks though password isn't modified
+
+    const { password: pass, ...userData } = user._doc;
+    res.json({ success: true, data: userData });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/users/:id/password
+router.put('/users/:id/password', protect, authorize('superadmin'), async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (!password || password.length < 6) return res.status(400).json({ success: false, message: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' });
+
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'المستخدم غير موجود' });
+
+    user.password = password;
+    await user.save();
+
+    res.json({ success: true, message: 'تم تغيير كلمة المرور بنجاح' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/users/:id/status
+router.put('/users/:id/status', protect, authorize('superadmin'), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'المستخدم غير موجود' });
+
+    user.isActive = !user.isActive;
+    await user.save();
+
+    res.json({ success: true, data: user, message: user.isActive ? 'تم تفعيل الحساب' : 'تم تعطيل الحساب' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/users/:id
+router.delete('/users/:id', protect, authorize('superadmin'), async (req, res) => {
+  try {
+    if (req.user._id.toString() === req.params.id) {
+      return res.status(400).json({ success: false, message: 'لا يمكنك حذف حسابك الخاص' });
+    }
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'تم حذف المستخدم' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

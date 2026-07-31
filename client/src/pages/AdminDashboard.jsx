@@ -10,6 +10,9 @@ import {
   FaRunning, FaCalendarAlt, FaProjectDiagram
 } from 'react-icons/fa';
 
+import ProjectsManager from '../components/admin/ProjectsManager';
+import UsersManager from '../components/admin/UsersManager';
+
 const NAV_ITEMS = [
   { key: 'stats', label: 'الإحصائيات', icon: <FaTachometerAlt /> },
   { key: 'projects', label: 'المشروعات', icon: <FaProjectDiagram /> },
@@ -275,87 +278,7 @@ export default function AdminDashboard() {
 
           {/* ===== PROJECTS ===== */}
           {tab === 'projects' && (
-            <div className="fade-in">
-              <div className="admin-header">
-                <h1>💼 إدارة المشروعات</h1>
-                <button className="btn btn-primary btn-sm" onClick={() => { setShowProjectForm(!showProjectForm); setEditItem(null); setProjectForm({ titleAr: '', titleEn: '', descAr: '', descEn: '', type: 'current', status: 'active', isHidden: false, order: 0, mainImage: '', images: '', pdfLinks: '', videoLink: '' }); }}>
-                  <FaPlus /> إضافة مشروع
-                </button>
-              </div>
-
-              {showProjectForm && (
-                <div style={{ background: '#fff', borderRadius: 'var(--radius-lg)', padding: '1.75rem', marginBottom: '1.5rem', border: '1px solid var(--border)' }}>
-                  <h3 style={{ marginBottom: '1.25rem' }}>{editItem ? 'تعديل المشروع' : 'إضافة مشروع جديد'}</h3>
-                  <form onSubmit={handleAddProject}>
-                    <div className="grid-2">
-                      <div className="form-group"><label className="form-label">العنوان (عربي) *</label><input className="form-control" value={projectForm.titleAr} onChange={e => setProjectForm({ ...projectForm, titleAr: e.target.value })} required /></div>
-                      <div className="form-group"><label className="form-label">العنوان (English) *</label><input className="form-control" value={projectForm.titleEn} onChange={e => setProjectForm({ ...projectForm, titleEn: e.target.value })} required dir="ltr" /></div>
-                    </div>
-                    <div className="grid-2">
-                      <div className="form-group"><label className="form-label">النوع</label>
-                        <select className="form-control" value={projectForm.type} onChange={e => setProjectForm({ ...projectForm, type: e.target.value })}>
-                          <option value="current">حالي</option><option value="past">سابق</option>
-                        </select>
-                      </div>
-                      <div className="form-group"><label className="form-label">الحالة</label>
-                        <select className="form-control" value={projectForm.status} onChange={e => setProjectForm({ ...projectForm, status: e.target.value })}>
-                          <option value="active">نشط</option><option value="completed">مكتمل</option><option value="planning">قيد التخطيط</option><option value="suspended">موقوف</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="grid-2">
-                      <div className="form-group"><label className="form-label">الوصف (عربي) *</label><textarea className="form-control" rows={3} value={projectForm.descAr} onChange={e => setProjectForm({ ...projectForm, descAr: e.target.value })} required /></div>
-                      <div className="form-group"><label className="form-label">الوصف (English) *</label><textarea className="form-control" rows={3} value={projectForm.descEn} onChange={e => setProjectForm({ ...projectForm, descEn: e.target.value })} required dir="ltr" /></div>
-                    </div>
-                    <div className="form-group"><label className="form-label">الصورة الرئيسية (رابط Drive أو رابط مباشر)</label><input className="form-control" value={projectForm.mainImage} onChange={e => setProjectForm({ ...projectForm, mainImage: e.target.value })} dir="ltr" /></div>
-                    <div className="form-group"><label className="form-label">معرض الصور (رابط في كل سطر)</label><textarea className="form-control" rows={3} value={projectForm.images} onChange={e => setProjectForm({ ...projectForm, images: e.target.value })} dir="ltr" /></div>
-                    <div className="grid-2">
-                      <div className="form-group"><label className="form-label">الترتيب (Order)</label><input className="form-control" type="number" value={projectForm.order} onChange={e => setProjectForm({ ...projectForm, order: e.target.value })} /></div>
-                      <div className="form-group" style={{ display: 'flex', alignItems: 'center', paddingTop: '1.5rem' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 'bold' }}>
-                          <input type="checkbox" checked={projectForm.isHidden} onChange={e => setProjectForm({ ...projectForm, isHidden: e.target.checked })} /> 👁️ إخفاء المشروع
-                        </label>
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
-                      <button className="btn btn-primary" type="submit" disabled={projectSubmitting}>
-                        {projectSubmitting ? <span className="spinner" style={{ width: 16, height: 16, margin: 0, borderTopColor: '#fff' }} /> : (editItem ? 'حفظ التعديلات' : 'إضافة المشروع')}
-                      </button>
-                      <button className="btn btn-ghost" type="button" onClick={() => setShowProjectForm(false)} disabled={projectSubmitting}>إلغاء</button>
-                    </div>
-                  </form>
-                </div>
-              )}
-
-              <div className="table-responsive">
-                <table className="admin-table">
-                  <thead><tr><th>الصورة</th><th>المشروع</th><th>النوع</th><th>الحالة</th><th>الترتيب</th><th>الرؤية</th><th>إجراءات</th></tr></thead>
-                  <tbody>
-                    {projects.map(p => (
-                      <tr key={p._id}>
-                        <td>{p.mainImage ? <img src={p.mainImage} alt="img" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '8px' }} /> : 'لا توجد'}</td>
-                        <td style={{ fontWeight: 600 }}>{p.title?.ar || p.title}</td>
-                        <td>{p.type === 'current' ? 'حالي' : 'سابق'}</td>
-                        <td><span className={`badge ${p.status === 'active' ? 'badge-green' : 'badge-gray'}`}>{p.status}</span></td>
-                        <td>{p.order || 0}</td>
-                        <td>{p.isHidden ? <span style={{ color: 'red' }}><FaTimesCircle style={{ verticalAlign: 'middle', marginRight: '4px' }} /> مخفي</span> : <span style={{ color: 'green' }}><FaCheckCircle style={{ verticalAlign: 'middle', marginRight: '4px' }} /> مرئي</span>}</td>
-                        <td>
-                          <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button className="btn-icon" onClick={() => {
-                              setEditItem(p);
-                              setProjectForm({ titleAr: p.title?.ar || p.title || '', titleEn: p.title?.en || '', descAr: p.description?.ar || p.description || '', descEn: p.description?.en || '', type: p.type || 'current', status: p.status || 'active', isHidden: !!p.isHidden, order: p.order || 0, mainImage: p.mainImage || '', images: p.images?.join('\n') || '', pdfLinks: p.pdfLinks?.join('\n') || '', videoLink: p.videoLink || '' });
-                              setShowProjectForm(true);
-                            }} title="تعديل"><FaEdit /></button>
-                            <button className="btn-icon text-danger" onClick={() => handleDeleteProject(p._id)} title="حذف"><FaTrash /></button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                    {projects.length === 0 && <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>لا توجد مشروعات</td></tr>}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <ProjectsManager />
           )}
 
           {/* ===== CASES ===== */}
@@ -654,43 +577,7 @@ export default function AdminDashboard() {
 
           {/* ===== USERS ===== */}
           {tab === 'users' && (
-            <div className="fade-in">
-              <div className="admin-header"><h1>👥 المستخدمون</h1></div>
-              {loading ? <div className="spinner" /> : (
-                <div className="table-wrap">
-                  <table className="data-table">
-                    <thead><tr><th>الاسم</th><th>البريد</th><th>الدور</th><th>النقاط</th><th>تاريخ الانضمام</th><th>إجراءات</th></tr></thead>
-                    <tbody>
-                      {users.map((u) => (
-                        <tr key={u._id}>
-                          <td>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                              <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--accent))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '0.85rem', flexShrink: 0 }}>
-                                {u.name.charAt(0)}
-                              </div>
-                              <strong>{u.name}</strong>
-                            </div>
-                          </td>
-                          <td style={{ fontSize: '0.83rem' }}>{u.email}</td>
-                          <td>
-                            <span className={`badge ${u.role === 'admin' ? 'badge-gold' : 'badge-green'}`}>
-                              {u.role === 'admin' ? '👑 أدمن' : '👤 مستخدم'}
-                            </span>
-                          </td>
-                          <td><span style={{ fontWeight: 600, color: 'var(--primary)' }}>{u.points || 0}</span></td>
-                          <td style={{ fontSize: '0.83rem', color: 'var(--text-muted)' }}>{new Date(u.createdAt).toLocaleDateString('ar-EG')}</td>
-                          <td>
-                            {u.role !== 'admin' && (
-                              <button className="btn btn-danger btn-sm" onClick={() => handleDeleteUser(u._id)}><FaTrash /></button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
+            <UsersManager />
           )}
         </main>
       </div>
