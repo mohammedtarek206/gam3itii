@@ -39,13 +39,13 @@ export default function VolunteerModal({ project, onClose }) {
   ];
 
   const days = [
-    { key: 'saturday',  label: i18n.language === 'en' ? 'Saturday' : 'السبت' },
-    { key: 'sunday',    label: i18n.language === 'en' ? 'Sunday' : 'الأحد' },
-    { key: 'monday',    label: i18n.language === 'en' ? 'Monday' : 'الإثنين' },
-    { key: 'tuesday',   label: i18n.language === 'en' ? 'Tuesday' : 'الثلاثاء' },
+    { key: 'saturday', label: i18n.language === 'en' ? 'Saturday' : 'السبت' },
+    { key: 'sunday', label: i18n.language === 'en' ? 'Sunday' : 'الأحد' },
+    { key: 'monday', label: i18n.language === 'en' ? 'Monday' : 'الإثنين' },
+    { key: 'tuesday', label: i18n.language === 'en' ? 'Tuesday' : 'الثلاثاء' },
     { key: 'wednesday', label: i18n.language === 'en' ? 'Wednesday' : 'الأربعاء' },
-    { key: 'thursday',  label: i18n.language === 'en' ? 'Thursday' : 'الخميس' },
-    { key: 'friday',    label: i18n.language === 'en' ? 'Friday' : 'الجمعة' },
+    { key: 'thursday', label: i18n.language === 'en' ? 'Thursday' : 'الخميس' },
+    { key: 'friday', label: i18n.language === 'en' ? 'Friday' : 'الجمعة' },
   ];
 
   const toggleDay = (day) => {
@@ -144,19 +144,19 @@ export default function VolunteerModal({ project, onClose }) {
                   <div className="grid-2">
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">{t('volunteer.full_name')}</label>
-                      <input className="form-control" value={form.fullName} onChange={e => setForm({...form, fullName: e.target.value})} placeholder={i18n.language === 'en' ? 'Full Name' : 'الاسم الكامل'} required />
+                      <input className="form-control" value={form.fullName} onChange={e => setForm({ ...form, fullName: e.target.value })} placeholder={i18n.language === 'en' ? 'Full Name' : 'الاسم الكامل'} required />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">{i18n.language === 'en' ? 'National ID (Optional)' : 'الرقم القومي (اختياري)'}</label>
-                      <input className="form-control" value={form.nationalId} onChange={e => setForm({...form, nationalId: e.target.value})} placeholder="14 digits" maxLength={14} />
+                      <input className="form-control" value={form.nationalId} onChange={e => setForm({ ...form, nationalId: e.target.value })} placeholder="14 digits" maxLength={14} />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">{t('volunteer.email')}</label>
-                      <input className="form-control" type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="example@mail.com" required />
+                      <input className="form-control" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="example@mail.com" required />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">{t('volunteer.phone')}</label>
-                      <input className="form-control" type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="01XXXXXXXXX" required />
+                      <input className="form-control" type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="01XXXXXXXXX" required />
                     </div>
                   </div>
                 </div>
@@ -169,22 +169,22 @@ export default function VolunteerModal({ project, onClose }) {
                   <div className="grid-2">
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">{t('volunteer.governorate')}</label>
-                      <select className="form-control" value={form.governorate} onChange={e => setForm({...form, governorate: e.target.value})} required>
+                      <select className="form-control" value={form.governorate} onChange={e => setForm({ ...form, governorate: e.target.value })} required>
                         <option value="">{i18n.language === 'en' ? 'Select Governorate' : 'اختر المحافظة'}</option>
                         {governorates.map(g => <option key={g} value={g}>{g}</option>)}
                       </select>
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">{t('volunteer.city')}</label>
-                      <input className="form-control" value={form.city} onChange={e => setForm({...form, city: e.target.value})} placeholder={i18n.language === 'en' ? 'City or Village' : 'المدينة أو القرية'} required />
+                      <input className="form-control" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} placeholder={i18n.language === 'en' ? 'City or Village' : 'المدينة أو القرية'} required />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">{t('volunteer.age')}</label>
-                      <input className="form-control" type="number" min="16" max="80" value={form.age} onChange={e => setForm({...form, age: e.target.value})} placeholder={i18n.language === 'en' ? 'Age in years' : 'العمر بالسنوات'} required />
+                      <input className="form-control" type="number" min="16" max="80" value={form.age} onChange={e => setForm({ ...form, age: e.target.value })} placeholder={i18n.language === 'en' ? 'Age in years' : 'العمر بالسنوات'} required />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">{t('volunteer.education')}</label>
-                      <select className="form-control" value={form.education} onChange={e => setForm({...form, education: e.target.value})} required>
+                      <select className="form-control" value={form.education} onChange={e => setForm({ ...form, education: e.target.value })} required>
                         <option value="">{i18n.language === 'en' ? 'Select Education Level' : 'اختر المؤهل'}</option>
                         {educationLevels.map(l => <option key={l} value={l}>{l}</option>)}
                       </select>
@@ -200,16 +200,16 @@ export default function VolunteerModal({ project, onClose }) {
                   <div className="grid-2">
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">{i18n.language === 'en' ? 'Profession' : 'المهنة'}</label>
-                      <input className="form-control" value={form.profession} onChange={e => setForm({...form, profession: e.target.value})} placeholder={i18n.language === 'en' ? 'Current job' : 'الوظيفة الحالية'} />
+                      <input className="form-control" value={form.profession} onChange={e => setForm({ ...form, profession: e.target.value })} placeholder={i18n.language === 'en' ? 'Current job' : 'الوظيفة الحالية'} />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">{i18n.language === 'en' ? 'Skills' : 'المهارات'}</label>
-                      <input className="form-control" value={form.skills} onChange={e => setForm({...form, skills: e.target.value})} placeholder={i18n.language === 'en' ? 'e.g. Medicine, Teaching, Photography...' : 'مثال: طب، تدريس، تصوير...'} />
+                      <input className="form-control" value={form.skills} onChange={e => setForm({ ...form, skills: e.target.value })} placeholder={i18n.language === 'en' ? 'e.g. Medicine, Teaching, Photography...' : 'مثال: طب، تدريس، تصوير...'} />
                     </div>
                   </div>
                   <div className="form-group" style={{ marginBottom: 0, marginTop: '1rem' }}>
                     <label className="form-label">{t('volunteer.motivation')}</label>
-                    <textarea className="form-control" rows={3} value={form.motivation} onChange={e => setForm({...form, motivation: e.target.value})} placeholder={i18n.language === 'en' ? 'Tell us why you want to volunteer...' : 'اكتب لنا عن دوافعك ورغبتك في التطوع...'} required />
+                    <textarea className="form-control" rows={3} value={form.motivation} onChange={e => setForm({ ...form, motivation: e.target.value })} placeholder={i18n.language === 'en' ? 'Tell us why you want to volunteer...' : 'اكتب لنا عن دوافعك ورغبتك في التطوع...'} required />
                   </div>
                 </div>
 
@@ -240,7 +240,7 @@ export default function VolunteerModal({ project, onClose }) {
                 {/* CV Link */}
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label">{i18n.language === 'en' ? 'CV / Resume Link (Optional)' : 'رابط السيرة الذاتية (اختياري)'}</label>
-                  <input className="form-control" value={form.cvFile} onChange={e => setForm({...form, cvFile: e.target.value})}
+                  <input className="form-control" value={form.cvFile} onChange={e => setForm({ ...form, cvFile: e.target.value })}
                     placeholder={i18n.language === 'en' ? 'Google Drive or Dropbox link' : 'رابط Google Drive أو Dropbox للسيرة الذاتية'} />
                   <small style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
                     {i18n.language === 'en' ? 'You can upload your CV to Google Drive and paste the link here' : 'يمكنك رفع السيرة الذاتية على Google Drive ولصق الرابط هنا'}
