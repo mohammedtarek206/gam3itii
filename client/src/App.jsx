@@ -31,7 +31,9 @@ const ProtectedRoute = ({ children }) => {
 const AdminRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <div className="spinner" style={{ marginTop: '10rem' }} />;
-  return user?.role === 'admin' ? children : <Navigate to="/" />;
+  if (!user) return <Navigate to="/login" />;
+  const isAdmin = ['admin', 'superadmin', 'content_manager', 'hr_manager', 'volunteer_manager', 'editor'].includes(user.role);
+  return isAdmin ? children : <Navigate to="/" />;
 };
 
 // Layout with Navbar + Footer

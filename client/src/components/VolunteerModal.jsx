@@ -111,7 +111,7 @@ export default function VolunteerModal({ project, onClose }) {
               <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <FaHandsHelping /> {t('volunteer.title')}
               </h3>
-              <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem', opacity: 0.8 }}>{project.title}</p>
+              <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem', opacity: 0.8 }}>{project.title?.ar || project.title}</p>
             </div>
             <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: '50%', width: 36, height: 36, color: '#fff', fontSize: '1.1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <FaTimes />

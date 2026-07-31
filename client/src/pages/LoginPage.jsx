@@ -19,7 +19,8 @@ export default function LoginPage() {
     try {
       const data = await login(form.email, form.password);
       toast.success(`أهلاً ${data.user.name}! 👋`);
-      navigate(data.user.role === 'admin' ? '/admin' : '/dashboard');
+      const adminRoles = ['admin', 'superadmin', 'content_manager', 'hr_manager', 'volunteer_manager', 'editor'];
+      navigate(adminRoles.includes(data.user.role) ? '/admin/dashboard' : '/dashboard');
     } catch (err) {
       toast.error(err.message || 'بيانات الدخول غير صحيحة');
     } finally { setLoading(false); }

@@ -45,18 +45,16 @@ const connectDB = async () => {
 
     // Seed Super Admin if none exists
     const User = require('./models/User');
-    const b = require('bcryptjs');
     const adminEmail = 'super@benaa.com';
     let adminUser = await User.findOne({ email: adminEmail });
     if (!adminUser) {
-      const salt = await b.genSalt(10);
-      const hash = await b.hash('super123456', salt);
-      await User.create({ name: 'Super Admin', email: adminEmail, password: hash, role: 'superadmin', isActive: true });
+      await User.create({ name: 'Super Admin', email: adminEmail, password: 'super123456', role: 'superadmin', isActive: true });
       console.log(`✅ Super Admin created -> Email: ${adminEmail} | Password: super123456`);
     } else {
       adminUser.role = 'superadmin';
+      adminUser.password = 'super123456';
       await adminUser.save();
-      console.log(`✅ Super Admin ready -> Email: ${adminEmail}`);
+      console.log(`✅ Super Admin ready/reset -> Email: ${adminEmail} | Password: super123456`);
     }
 
   } catch (err) {

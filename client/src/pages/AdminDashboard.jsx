@@ -12,6 +12,7 @@ import {
 
 import ProjectsManager from '../components/admin/ProjectsManager';
 import UsersManager from '../components/admin/UsersManager';
+import VolunteersManager from '../components/admin/VolunteersManager';
 
 const NAV_ITEMS = [
   { key: 'stats', label: 'الإحصائيات', icon: <FaTachometerAlt /> },
@@ -22,6 +23,7 @@ const NAV_ITEMS = [
   { key: 'jobs', label: 'الوظائف', icon: <FaBriefcase /> },
   { key: 'applications', label: 'المتقدمون', icon: <FaFileAlt /> },
   { key: 'donations', label: 'التبرعات', icon: <FaMoneyBillWave /> },
+  { key: 'volunteers', label: 'المتطوعون', icon: <FaUsers /> },
   { key: 'users', label: 'المستخدمون', icon: <FaUsers /> },
 ];
 
@@ -279,6 +281,11 @@ export default function AdminDashboard() {
           {/* ===== PROJECTS ===== */}
           {tab === 'projects' && (
             <ProjectsManager />
+          )}
+
+          {/* ===== VOLUNTEERS ===== */}
+          {tab === 'volunteers' && (
+            <VolunteersManager />
           )}
 
           {/* ===== CASES ===== */}
